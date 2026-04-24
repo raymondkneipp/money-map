@@ -1,6 +1,7 @@
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
+import { ReactFlowProvider } from "@xyflow/react";
 import { TooltipProvider } from "#/components/ui/tooltip";
 import { SidebarLeft } from "@/components/sidebar-left";
 import { SidebarRight } from "@/components/sidebar-right";
@@ -42,11 +43,13 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 			</head>
 			<body className="font-sans antialiased">
 				<TooltipProvider>
-					<SidebarProvider>
-						<SidebarLeft />
-						<SidebarInset>{children}</SidebarInset>
-						<SidebarRight />
-					</SidebarProvider>
+					<ReactFlowProvider>
+						<SidebarProvider>
+							<SidebarLeft />
+							<SidebarInset>{children}</SidebarInset>
+							<SidebarRight />
+						</SidebarProvider>
+					</ReactFlowProvider>
 
 					<TanStackDevtools
 						config={{

@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import DemoFlow from "#/components/demo-flow";
 import {
 	Breadcrumb,
 	BreadcrumbItem,
@@ -8,6 +7,7 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { Flow } from "#/components/flow";
 
 export const Route = createFileRoute("/")({ component: App });
 
@@ -34,7 +34,7 @@ function App() {
 			</header>
 
 			<div className="absolute inset-x-0 bottom-0 top-0">
-				<DemoFlow />
+				<Flow />
 			</div>
 		</>
 	);

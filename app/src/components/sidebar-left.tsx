@@ -1,6 +1,7 @@
 "use client";
 
 import {
+	Analytics01Icon,
 	CalendarIcon,
 	CubeIcon,
 	Delete02Icon,
@@ -8,7 +9,6 @@ import {
 	InputCursorTextIcon,
 	Location01Icon,
 	MessageQuestionIcon,
-	SearchIcon,
 	Settings05Icon,
 	TableIcon,
 	WorkflowSquare10Icon,
@@ -50,14 +50,14 @@ const data = {
 	],
 	navMain: [
 		{
-			title: "Search",
-			url: "#",
-			icon: <HugeiconsIcon icon={SearchIcon} strokeWidth={2} />,
-		},
-		{
 			title: "Home",
 			url: "/",
 			icon: <HugeiconsIcon icon={HomeIcon} strokeWidth={2} />,
+		},
+		{
+			title: "Stats",
+			url: "/stats",
+			icon: <HugeiconsIcon icon={Analytics01Icon} strokeWidth={2} />,
 		},
 		{
 			title: "Simple Form Demo",
