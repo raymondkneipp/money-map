@@ -7,12 +7,13 @@ import {
 } from "@/components/ui/breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import DemoFlow from "#/components/demo-flow";
 
 export const Route = createFileRoute("/")({ component: App });
 
 function App() {
 	return (
-		<>
+		<div>
 			<header className="sticky top-0 flex h-14 shrink-0 items-center gap-2 bg-background">
 				<div className="flex flex-1 items-center gap-2 px-3">
 					<SidebarTrigger />
@@ -31,10 +32,10 @@ function App() {
 					</Breadcrumb>
 				</div>
 			</header>
-			<div className="flex flex-1 flex-col gap-4 p-4">
-				<div className="mx-auto h-24 w-full rounded-xl bg-muted/50" />
-				<div className="mx-auto h-[70vh] w-full rounded-xl bg-muted/50" />
+
+			<div className="absolute inset-x-0 bottom-0 top-14">
+                <DemoFlow />
 			</div>
-		</>
+		</div>
 	);
 }
