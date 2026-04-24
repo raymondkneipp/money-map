@@ -2,6 +2,7 @@ import { TanStackDevtools } from "@tanstack/react-devtools";
 import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { ReactFlowProvider } from "@xyflow/react";
+import { PreventPageZoom } from "#/components/prevent-page-zoom";
 import { TooltipProvider } from "#/components/ui/tooltip";
 import { SidebarLeft } from "@/components/sidebar-left";
 import { SidebarRight } from "@/components/sidebar-right";
@@ -18,7 +19,8 @@ export const Route = createRootRoute({
 			},
 			{
 				name: "viewport",
-				content: "width=device-width, initial-scale=1",
+				content:
+					"width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no",
 			},
 			{
 				title: "TanStack Start Starter",
@@ -43,6 +45,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 			</head>
 			<body className="font-sans antialiased">
 				<TooltipProvider>
+					<PreventPageZoom />
 					<ReactFlowProvider>
 						<SidebarProvider>
 							<SidebarLeft />

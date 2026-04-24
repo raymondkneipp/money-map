@@ -1,0 +1,172 @@
+import {
+	BankIcon,
+	BitcoinCircleIcon,
+	Maximize01Icon,
+	Money01Icon,
+	PiggyBankIcon,
+	PlusSignIcon,
+	SearchAddIcon,
+	SearchMinusIcon,
+	ShoppingBag01Icon,
+	SquareLock01Icon,
+	SquareUnlock01Icon,
+} from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { type Node, Panel, useReactFlow } from "@xyflow/react";
+import { Button } from "@/components/ui/button";
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuItem,
+	DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator";
+
+type NodeKind =
+	| "incomeNode"
+	| "checkingNode"
+	| "savingsNode"
+	| "expenseNode"
+	| "cryptoNode";
+
+const NODE_PRESETS: Array<{
+	kind: NodeKind;
+	label: string;
+	icon: typeof Money01Icon;
+	data: Record<string, unknown>;
+}> = [
+	{
+		kind: "incomeNode",
+		label: "Income",
+		icon: Money01Icon,
+		data: {
+			name: "New income",
+			amount: 1000,
+			frequency: "monthly",
+			passive: false,
+		},
+	},
+	{
+		kind: "checkingNode",
+		label: "Checking",
+		icon: BankIcon,
+		data: { name: "Checking", principal: 0, apy: 0 },
+	},
+	{
+		kind: "savingsNode",
+		label: "Savings",
+		icon: PiggyBankIcon,
+		data: { name: "Savings", principal: 0, apy: 4 },
+	},
+	{
+		kind: "expenseNode",
+		label: "Expense",
+		icon: ShoppingBag01Icon,
+		data: {
+			name: "New expense",
+			amount: 100,
+			frequency: "monthly",
+			category: "other",
+		},
+	},
+	{
+		kind: "cryptoNode",
+		label: "Crypto",
+		icon: BitcoinCircleIcon,
+		data: {
+			name: "BTC",
+			coin: "bitcoin",
+			principal: 0,
+			growthProfile: "moderate",
+		},
+	},
+];
+
+export function FlowToolbar({
+	interactive,
+	onInteractiveChange,
+}: {
+	interactive: boolean;
+	onInteractiveChange: (next: boolean) => void;
+}) {
+	const { zoomIn, zoomOut, fitView, addNodes, screenToFlowPosition } =
+		useReactFlow();
+
+	const onAdd = (preset: (typeof NODE_PRESETS)[number]) => {
+		const position = screenToFlowPosition({
+			x: window.innerWidth / 2,
+			y: window.innerHeight / 2,
+		});
+		const node: Node = {
+			id: `${preset.kind}-${Date.now()}`,
+			type: preset.kind,
+			position,
+			data: preset.data,
+			selected: true,
+		};
+		addNodes(node);
+	};
+
+	return (
+		<Panel position="bottom-center">
+			<div className="flex items-center gap-1 rounded-md border border-border bg-background p-1 shadow-sm">
+				<Button
+					variant="ghost"
+					size="icon"
+					onClick={() => zoomIn()}
+					aria-label="Zoom in"
+				>
+					<HugeiconsIcon icon={SearchAddIcon} strokeWidth={2} />
+				</Button>
+				<Button
+					variant="ghost"
+					size="icon"
+					onClick={() => zoomOut()}
+					aria-label="Zoom out"
+				>
+					<HugeiconsIcon icon={SearchMinusIcon} strokeWidth={2} />
+				</Button>
+				<Button
+					variant="ghost"
+					size="icon"
+					onClick={() => fitView({ padding: 0.1 })}
+					aria-label="Fit view"
+				>
+					<HugeiconsIcon icon={Maximize01Icon} strokeWidth={2} />
+				</Button>
+				<Button
+					variant="ghost"
+					size="icon"
+					onClick={() => onInteractiveChange(!interactive)}
+					aria-label={interactive ? "Lock canvas" : "Unlock canvas"}
+					aria-pressed={!interactive}
+				>
+					<HugeiconsIcon
+						icon={interactive ? SquareUnlock01Icon : SquareLock01Icon}
+						strokeWidth={2}
+					/>
+				</Button>
+				<Separator orientation="vertical" className="mx-1" />
+				<DropdownMenu>
+					<DropdownMenuTrigger asChild>
+						<Button variant="ghost" aria-label="Add node">
+							<HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} />
+							<span>Add node</span>
+						</Button>
+					</DropdownMenuTrigger>
+					<DropdownMenuContent align="center" side="top">
+						{NODE_PRESETS.map((preset) => (
+							<DropdownMenuItem
+								key={preset.kind}
+								onSelect={() => onAdd(preset)}
+							>
+								<HugeiconsIcon icon={preset.icon} strokeWidth={2} />
+								<span>{preset.label}</span>
+							</DropdownMenuItem>
+						))}
+					</DropdownMenuContent>
+				</DropdownMenu>
+			</div>
+		</Panel>
+	);
+}
