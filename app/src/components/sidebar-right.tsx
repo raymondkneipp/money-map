@@ -1,7 +1,6 @@
 import { PlusSignIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import type * as React from "react";
-import { Calendars } from "#/components/calendars";
 import { DatePicker } from "#/components/date-picker";
 import { NavUser } from "#/components/nav-user";
 import {
@@ -53,7 +52,6 @@ export function SidebarRight({
 			<SidebarContent>
 				<DatePicker />
 				<SidebarSeparator className="mx-0" />
-				<Calendars calendars={data.calendars} />
 			</SidebarContent>
 			<SidebarFooter>
 				<SidebarMenu>

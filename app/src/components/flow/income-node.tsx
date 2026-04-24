@@ -55,7 +55,7 @@ export function IncomeNode({
 	}, []);
 
 	return (
-		<BaseNode className="w-48 dark:bg-green-900 dark:border-green-600 bg-green-200 border-green-400">
+		<BaseNode className="w-48 dark:bg-green-900 dark:border-green-600 bg-green-200 border-green-400 in-[.selected]:shadow-green-400/50 dark:in-[.selected]:border-green-600/50">
 			<BaseNodeHeader className="border-b dark:border-green-600 border-green-400">
 				<HugeiconsIcon icon={Money01Icon} strokeWidth={2} className="size-4" />
 				<BaseNodeHeaderTitle>{label}</BaseNodeHeaderTitle>
