@@ -13,8 +13,8 @@ import { useCallback, useState } from "react";
 import "@xyflow/react/dist/style.css";
 import { AllocationEdge } from "./allocation-edge";
 import { BaseNodeFullDemo } from "./base-node-full-demo";
-import { initialEdges, initialNodes } from "./data";
 import { ExpenseEdge } from "./expense-edge";
+import { useFlowState } from "./flow-state";
 import { FlowToolbar } from "./flow-toolbar";
 import { AssetNode } from "./nodes/asset-node";
 import { CheckingNode } from "./nodes/checking-node";
@@ -48,8 +48,7 @@ const edgeTypes = {
 };
 
 export function Flow() {
-	const [nodes, setNodes] = useState(initialNodes);
-	const [edges, setEdges] = useState(initialEdges);
+	const { nodes, edges, setNodes, setEdges } = useFlowState();
 	const [interactive, setInteractive] = useState(true);
 
 	const onNodesChange = useCallback(

@@ -2,6 +2,7 @@ import { TanStackDevtools } from "@tanstack/react-devtools";
 import { createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { ReactFlowProvider } from "@xyflow/react";
+import { FlowStateProvider } from "#/components/flow/flow-state";
 import { PreventPageZoom } from "#/components/prevent-page-zoom";
 import { TooltipProvider } from "#/components/ui/tooltip";
 import { SidebarLeft } from "@/components/sidebar-left";
@@ -47,11 +48,13 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 				<TooltipProvider>
 					<PreventPageZoom />
 					<ReactFlowProvider>
-						<SidebarProvider>
-							<SidebarLeft />
-							<SidebarInset>{children}</SidebarInset>
-							<SidebarRight />
-						</SidebarProvider>
+						<FlowStateProvider>
+							<SidebarProvider>
+								<SidebarLeft />
+								<SidebarInset>{children}</SidebarInset>
+								<SidebarRight />
+							</SidebarProvider>
+						</FlowStateProvider>
 					</ReactFlowProvider>
 
 					<TanStackDevtools
