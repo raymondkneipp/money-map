@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { FREQUENCIES, type Frequency, type IncomeNodeData } from "../types";
+import { selectOnFocus } from "./select-on-focus";
 
 export function IncomeEditor({
 	node,
@@ -54,6 +55,7 @@ export function IncomeEditor({
 							type="number"
 							min={0}
 							max={100_000}
+							onFocus={selectOnFocus}
 							onChange={(e) => {
 								const capped = Math.min(
 									100_000,

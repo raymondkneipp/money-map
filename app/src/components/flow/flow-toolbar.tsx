@@ -1,10 +1,11 @@
 import {
 	BankIcon,
 	BitcoinCircleIcon,
-	Maximize01Icon,
+	FullscreenIcon,
 	Money01Icon,
 	PiggyBankIcon,
 	PlusSignIcon,
+	RockingChairIcon,
 	SearchAddIcon,
 	SearchMinusIcon,
 	ShoppingBag01Icon,
@@ -27,18 +28,21 @@ type NodeKind =
 	| "checkingNode"
 	| "savingsNode"
 	| "expenseNode"
-	| "cryptoNode";
+	| "cryptoNode"
+	| "retirementNode";
 
 const NODE_PRESETS: Array<{
 	kind: NodeKind;
 	label: string;
 	icon: typeof Money01Icon;
+	iconColor?: string;
 	data: Record<string, unknown>;
 }> = [
 	{
 		kind: "incomeNode",
 		label: "Income",
 		icon: Money01Icon,
+		iconColor: "var(--color-green-500)",
 		data: {
 			name: "New income",
 			amount: 1000,
@@ -56,12 +60,14 @@ const NODE_PRESETS: Array<{
 		kind: "savingsNode",
 		label: "Savings",
 		icon: PiggyBankIcon,
+		iconColor: "var(--color-blue-500)",
 		data: { name: "Savings", principal: 0, apy: 4 },
 	},
 	{
 		kind: "expenseNode",
 		label: "Expense",
 		icon: ShoppingBag01Icon,
+		iconColor: "var(--color-amber-500)",
 		data: {
 			name: "New expense",
 			amount: 100,
@@ -73,11 +79,24 @@ const NODE_PRESETS: Array<{
 		kind: "cryptoNode",
 		label: "Crypto",
 		icon: BitcoinCircleIcon,
+		iconColor: "var(--color-blue-500)",
 		data: {
 			name: "BTC",
 			coin: "bitcoin",
 			principal: 0,
 			growthProfile: "moderate",
+		},
+	},
+	{
+		kind: "retirementNode",
+		label: "401(k)",
+		icon: RockingChairIcon,
+		iconColor: "var(--color-blue-500)",
+		data: {
+			name: "401(k)",
+			principal: 0,
+			apy: 7,
+			employerMatch: 50,
 		},
 	},
 ];
@@ -89,8 +108,15 @@ export function FlowToolbar({
 	interactive: boolean;
 	onInteractiveChange: (next: boolean) => void;
 }) {
-	const { zoomIn, zoomOut, fitView, addNodes, screenToFlowPosition } =
-		useReactFlow();
+	const {
+		zoomIn,
+		zoomOut,
+		fitView,
+		addNodes,
+		setNodes,
+		setEdges,
+		screenToFlowPosition,
+	} = useReactFlow();
 
 	const onAdd = (preset: (typeof NODE_PRESETS)[number]) => {
 		const position = screenToFlowPosition({
@@ -104,6 +130,13 @@ export function FlowToolbar({
 			data: preset.data,
 			selected: true,
 		};
+		// deselect everything else so the new node is the sole selection
+		setNodes((ns) =>
+			ns.map((n) => (n.selected ? { ...n, selected: false } : n)),
+		);
+		setEdges((es) =>
+			es.map((e) => (e.selected ? { ...e, selected: false } : e)),
+		);
 		addNodes(node);
 	};
 
@@ -132,7 +165,7 @@ export function FlowToolbar({
 					onClick={() => fitView({ padding: 0.1 })}
 					aria-label="Fit view"
 				>
-					<HugeiconsIcon icon={Maximize01Icon} strokeWidth={2} />
+					<HugeiconsIcon icon={FullscreenIcon} strokeWidth={2} />
 				</Button>
 				<Button
 					variant="ghost"
@@ -160,7 +193,13 @@ export function FlowToolbar({
 								key={preset.kind}
 								onSelect={() => onAdd(preset)}
 							>
-								<HugeiconsIcon icon={preset.icon} strokeWidth={2} />
+								<HugeiconsIcon
+									icon={preset.icon}
+									strokeWidth={2}
+									style={
+										preset.iconColor ? { color: preset.iconColor } : undefined
+									}
+								/>
 								<span>{preset.label}</span>
 							</DropdownMenuItem>
 						))}

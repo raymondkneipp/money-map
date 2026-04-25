@@ -26,6 +26,7 @@ import {
 	type CryptoGrowthProfile,
 	type CryptoNodeData,
 } from "../types";
+import { selectOnFocus } from "./select-on-focus";
 
 export function CryptoEditor({
 	node,
@@ -66,6 +67,7 @@ export function CryptoEditor({
 							min={0}
 							step="any"
 							value={data.principal}
+							onFocus={selectOnFocus}
 							onChange={(e) =>
 								onChange(id, { principal: Math.max(0, Number(e.target.value)) })
 							}
@@ -143,7 +145,7 @@ function CoinCombobox({
 				</Button>
 			</PopoverTrigger>
 			<PopoverContent
-				className="w-[--radix-popover-trigger-width] p-0"
+				className="w-[--radix-popover-trigger-width] p-0 gap-0"
 				align="start"
 			>
 				<div className="p-2 border-b">

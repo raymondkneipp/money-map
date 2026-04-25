@@ -1,3 +1,4 @@
+import { HugeiconsIcon } from "@hugeicons/react";
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
@@ -15,6 +16,7 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { CATEGORY_ICON } from "../nodes/expense-node";
 import {
 	EXPENSE_CATEGORIES,
 	type ExpenseCategory,
@@ -22,6 +24,7 @@ import {
 	FREQUENCIES,
 	type Frequency,
 } from "../types";
+import { selectOnFocus } from "./select-on-focus";
 
 export function ExpenseEditor({
 	node,
@@ -58,6 +61,7 @@ export function ExpenseEditor({
 							min={0}
 							max={100_000}
 							value={data.amount}
+							onFocus={selectOnFocus}
 							onChange={(e) => {
 								const capped = Math.min(
 									100_000,
@@ -106,6 +110,11 @@ export function ExpenseEditor({
 							<SelectGroup>
 								{EXPENSE_CATEGORIES.map((c) => (
 									<SelectItem key={c.id} value={c.id}>
+										<HugeiconsIcon
+											icon={CATEGORY_ICON[c.id]}
+											strokeWidth={2}
+											className="size-3.5"
+										/>
 										{c.label}
 									</SelectItem>
 								))}

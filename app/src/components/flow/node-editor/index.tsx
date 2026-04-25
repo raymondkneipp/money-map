@@ -5,6 +5,7 @@ import type {
 	CryptoNodeData,
 	ExpenseNodeData,
 	IncomeNodeData,
+	RetirementNodeData,
 	SavingsNodeData,
 } from "../types";
 import { CheckingEditor } from "./checking-editor";
@@ -12,6 +13,7 @@ import { CryptoEditor } from "./crypto-editor";
 import { EdgeEditor } from "./edge-editor";
 import { ExpenseEditor } from "./expense-editor";
 import { IncomeEditor } from "./income-editor";
+import { RetirementEditor } from "./retirement-editor";
 import { SavingsEditor } from "./savings-editor";
 
 export function NodeEditor() {
@@ -59,6 +61,14 @@ export function NodeEditor() {
 			return (
 				<CryptoEditor
 					node={selectedNode as CryptoNodeData}
+					onChange={updateNodeData}
+				/>
+			);
+		}
+		if (selectedNode.type === "retirementNode") {
+			return (
+				<RetirementEditor
+					node={selectedNode as RetirementNodeData}
 					onChange={updateNodeData}
 				/>
 			);

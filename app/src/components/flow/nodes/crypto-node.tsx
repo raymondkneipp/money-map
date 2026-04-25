@@ -82,7 +82,7 @@ export function CryptoNode({
 			</BaseNodeHeader>
 			<BaseNodeContent>
 				<div className="flex items-baseline justify-between gap-2">
-					<span className="text-xs text-muted-foreground">Holdings</span>
+					<span className="text-xs text-foreground">Holdings</span>
 					<span className="font-heading font-semibold tabular-nums">
 						{data.principal}
 						<span className="ml-0.5 text-xs font-normal">
@@ -91,7 +91,7 @@ export function CryptoNode({
 					</span>
 				</div>
 				<div className="flex items-baseline justify-between gap-2">
-					<span className="text-xs text-muted-foreground">Value</span>
+					<span className="text-xs text-foreground">Value</span>
 					<span className="font-heading font-semibold tabular-nums">
 						{error
 							? "—"
@@ -101,14 +101,14 @@ export function CryptoNode({
 					</span>
 				</div>
 				<div className="flex items-baseline justify-between gap-2">
-					<span className="text-xs text-muted-foreground">Contribution</span>
+					<span className="text-xs text-foreground">Contribution</span>
 					<span className="text-sm tabular-nums">
 						{usd.format(monthlyContribution)}
 						<span className="ml-0.5 text-xs font-normal">/mo</span>
 					</span>
 				</div>
 				<div className="flex items-baseline justify-between gap-2">
-					<span className="text-xs text-muted-foreground">Growth</span>
+					<span className="text-xs text-foreground">Growth</span>
 					<span className="text-xs tabular-nums">
 						{profile ? `${profile.label} (${profile.apy}%)` : "—"}
 					</span>

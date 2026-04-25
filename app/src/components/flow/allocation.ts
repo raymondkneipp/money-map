@@ -5,6 +5,7 @@ import {
 	FREQUENCY_BY_ID,
 	type Frequency,
 	type IncomeNodeData,
+	type RetirementNodeData,
 	toAnnual,
 } from "./types";
 
@@ -59,6 +60,13 @@ export function nodeAnnualInflow(
 		if (e.type !== "allocation" && e.type !== "expense") continue;
 		sum += edgeAnnualValue(e, nodes, edges, nextVisited);
 	}
+
+	// 401(k) inflow is grossed up by the node's employer match percentage.
+	if (node.type === "retirementNode") {
+		const d = (node as RetirementNodeData).data;
+		return sum * (1 + d.employerMatch / 100);
+	}
+
 	return sum;
 }
 
@@ -180,6 +188,29 @@ export function nodeAnnualOutflow(
 ): number {
 	const util = computeNodeUtilization(nodeId, nodes, edges);
 	return util.allocatedAnnual;
+}
+
+/**
+ * Stroke width for an edge, scaled so the largest-flow edge in the graph is
+ * thickest and the smallest is thinnest. Uses a sqrt curve so a 100× ratio in
+ * dollar flow doesn't translate to a 100× ratio in pixel width.
+ */
+export function edgeStrokeWidth(
+	edge: Edge,
+	nodes: Node[],
+	edges: Edge[],
+): number {
+	const MIN = 1;
+	const MAX = 6;
+	const annual = edgeAnnualValue(edge, nodes, edges);
+	let maxAnnual = 0;
+	for (const e of edges) {
+		const v = edgeAnnualValue(e, nodes, edges);
+		if (v > maxAnnual) maxAnnual = v;
+	}
+	if (maxAnnual <= 0 || annual <= 0) return MIN;
+	const ratio = Math.min(1, annual / maxAnnual);
+	return MIN + (MAX - MIN) * Math.sqrt(ratio);
 }
 
 /**

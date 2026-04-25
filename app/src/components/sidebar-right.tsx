@@ -22,8 +22,10 @@ export function SidebarRight(props: React.ComponentProps<typeof Sidebar>) {
 	const { setNodes, setEdges } = useReactFlow();
 	const isMobile = useIsMobile();
 
-	const hasSelection =
-		nodes.some((n) => n.selected) || edges.some((e) => e.selected);
+	const selectedCount =
+		nodes.filter((n) => n.selected).length +
+		edges.filter((e) => e.selected).length;
+	const hasSingleSelection = selectedCount === 1;
 
 	const deselect = () => {
 		setNodes((ns) =>
@@ -37,7 +39,7 @@ export function SidebarRight(props: React.ComponentProps<typeof Sidebar>) {
 	if (isMobile) {
 		return (
 			<Sheet
-				open={hasSelection}
+				open={hasSingleSelection}
 				onOpenChange={(open) => {
 					if (!open) deselect();
 				}}
@@ -60,20 +62,24 @@ export function SidebarRight(props: React.ComponentProps<typeof Sidebar>) {
 		);
 	}
 
-	if (!hasSelection) return null;
-
 	return (
-		<Sidebar
-			collapsible="none"
-			className="sticky top-0 hidden h-svh border-l lg:flex"
-			{...props}
+		<div
+			data-state={hasSingleSelection ? "open" : "closed"}
+			aria-hidden={!hasSingleSelection}
+			className="sticky top-0 hidden h-svh w-0 overflow-hidden transition-[width] duration-200 ease-in-out data-[state=open]:w-(--sidebar-width) data-[state=open]:border-l lg:block"
 		>
-			<SidebarContent>
-				<NodeEditor />
-			</SidebarContent>
-			<SidebarFooter>
-				<DeleteSelected />
-			</SidebarFooter>
-		</Sidebar>
+			<Sidebar
+				collapsible="none"
+				className="h-svh w-(--sidebar-width)"
+				{...props}
+			>
+				<SidebarContent>
+					<NodeEditor />
+				</SidebarContent>
+				<SidebarFooter>
+					<DeleteSelected />
+				</SidebarFooter>
+			</Sidebar>
+		</div>
 	);
 }

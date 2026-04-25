@@ -25,7 +25,7 @@ import {
 	FREQUENCY_BY_ID,
 } from "../types";
 
-const CATEGORY_ICON = {
+export const CATEGORY_ICON = {
 	housing: Home01Icon,
 	food: Coffee01Icon,
 	transport: TaxiIcon,

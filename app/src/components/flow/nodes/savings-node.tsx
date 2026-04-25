@@ -47,20 +47,20 @@ export function SavingsNode({
 			</BaseNodeHeader>
 			<BaseNodeContent>
 				<div className="flex items-baseline justify-between gap-2">
-					<span className="text-xs text-muted-foreground">Balance</span>
+					<span className="text-xs text-foreground">Balance</span>
 					<span className="font-heading font-semibold">
 						{usd.format(data.principal)}
 					</span>
 				</div>
 				<div className="flex items-baseline justify-between gap-2">
-					<span className="text-xs text-muted-foreground">In</span>
+					<span className="text-xs text-foreground">In</span>
 					<span className="font-heading font-semibold">
 						{usd.format(monthlyIn)}
 						<span className="ml-0.5 text-xs font-normal">/mo</span>
 					</span>
 				</div>
 				<div className="flex items-baseline justify-between gap-2">
-					<span className="text-xs text-muted-foreground">APY</span>
+					<span className="text-xs text-foreground">APY</span>
 					<span className="text-sm tabular-nums">{data.apy.toFixed(2)}%</span>
 				</div>
 				<BaseHandle id="target-1" type="target" position={Position.Left} />

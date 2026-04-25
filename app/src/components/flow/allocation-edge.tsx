@@ -6,7 +6,7 @@ import {
 	useEdges,
 	useNodes,
 } from "@xyflow/react";
-import { edgeAnnualValue, formatAnnualAs } from "./allocation";
+import { edgeAnnualValue, edgeStrokeWidth, formatAnnualAs } from "./allocation";
 import type { AllocationEdgeData } from "./types";
 
 // display detail in the source income's frequency when we can find one
@@ -34,7 +34,9 @@ function displayFrequencyFor(
 
 function formatRule(data: AllocationEdgeData | undefined): string {
 	if (!data) return "—";
-	if (data.mode === "percent") return `${data.percent ?? 0}%`;
+	if (data.mode === "percent") {
+		return `${data.percent ?? 0}%`;
+	}
 	if (data.mode === "fixed" && data.amount != null && data.frequency) {
 		const fmt = new Intl.NumberFormat("en-US", {
 			style: "currency",
@@ -43,13 +45,17 @@ function formatRule(data: AllocationEdgeData | undefined): string {
 		}).format(data.amount);
 		return `${fmt}/${data.frequency.slice(0, 2)}`;
 	}
-	if (data.mode === "remainder") return "rest";
+	if (data.mode === "remainder") {
+		return "rest";
+	}
+
 	return "—";
 }
 
 export function AllocationEdge({
 	id,
 	source,
+	target,
 	sourceX,
 	sourceY,
 	targetX,
@@ -75,17 +81,21 @@ export function AllocationEdge({
 
 	// compute effective $/period; choose a display frequency matching the
 	// ultimate income source (fallback monthly)
-	const annual = edgeAnnualValue(
-		{ id, source, target: "", data: edgeData } as never,
-		nodes,
-		edges,
-	);
+	const edgeShape = {
+		id,
+		source,
+		target,
+		data: edgeData,
+		type: "allocation",
+	} as never;
+	const annual = edgeAnnualValue(edgeShape, nodes, edges);
 	const displayFrequency = displayFrequencyFor(source, nodes, edges);
 	const detail = annual > 0 ? formatAnnualAs(annual, displayFrequency) : null;
+	const strokeWidth = edgeStrokeWidth(edgeShape, nodes, edges);
 
 	return (
 		<>
-			<BaseEdge id={id} path={path} />
+			<BaseEdge id={id} path={path} style={{ strokeWidth }} />
 			<EdgeLabelRenderer>
 				<div
 					style={{

@@ -7,6 +7,7 @@ import {
 	InputGroupText,
 } from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import {
 	Select,
 	SelectContent,
@@ -21,6 +22,13 @@ import {
 	FREQUENCIES,
 	type Frequency,
 } from "../types";
+import { selectOnFocus } from "./select-on-focus";
+
+const MODE_OPTIONS: { value: AllocationMode; label: string }[] = [
+	{ value: "percent", label: "Percent of income" },
+	{ value: "fixed", label: "Fixed amount" },
+	{ value: "remainder", label: "Remainder (rest)" },
+];
 
 export function EdgeEditor({
 	edge,
@@ -58,22 +66,25 @@ export function EdgeEditor({
 			<h3 className="mb-3 text-sm font-semibold">Edit Allocation</h3>
 			<FieldGroup>
 				<Field>
-					<Label htmlFor={`edge-mode-${id}`}>Mode</Label>
-					<Select
+					<Label>Mode</Label>
+					<RadioGroup
 						value={data.mode}
 						onValueChange={(v) => setMode(v as AllocationMode)}
 					>
-						<SelectTrigger id={`edge-mode-${id}`}>
-							<SelectValue />
-						</SelectTrigger>
-						<SelectContent>
-							<SelectGroup>
-								<SelectItem value="percent">Percent of income</SelectItem>
-								<SelectItem value="fixed">Fixed amount</SelectItem>
-								<SelectItem value="remainder">Remainder (rest)</SelectItem>
-							</SelectGroup>
-						</SelectContent>
-					</Select>
+						{MODE_OPTIONS.map((opt) => (
+							<Label
+								key={opt.value}
+								htmlFor={`edge-mode-${id}-${opt.value}`}
+								className="flex items-center gap-2 font-normal"
+							>
+								<RadioGroupItem
+									id={`edge-mode-${id}-${opt.value}`}
+									value={opt.value}
+								/>
+								<span>{opt.label}</span>
+							</Label>
+						))}
+					</RadioGroup>
 				</Field>
 
 				{data.mode === "percent" && (
@@ -86,6 +97,7 @@ export function EdgeEditor({
 								min={0}
 								max={100}
 								value={data.percent ?? 0}
+								onFocus={selectOnFocus}
 								onChange={(e) => {
 									const capped = Math.min(
 										100,
@@ -115,6 +127,7 @@ export function EdgeEditor({
 									min={0}
 									max={100_000}
 									value={data.amount ?? 0}
+									onFocus={selectOnFocus}
 									onChange={(e) => {
 										const capped = Math.min(
 											100_000,

@@ -20,6 +20,7 @@ import { CheckingNode } from "./nodes/checking-node";
 import { CryptoNode } from "./nodes/crypto-node";
 import { ExpenseNode } from "./nodes/expense-node";
 import { IncomeNode } from "./nodes/income-node";
+import { RetirementNode } from "./nodes/retirement-node";
 import { SavingsNode } from "./nodes/savings-node";
 import type { AllocationEdgeData } from "./types";
 
@@ -30,6 +31,7 @@ const nodeTypes = {
 	savingsNode: SavingsNode,
 	expenseNode: ExpenseNode,
 	cryptoNode: CryptoNode,
+	retirementNode: RetirementNode,
 };
 
 const MONEY_SOURCE_TYPES = new Set(["incomeNode", "checkingNode"]);
@@ -73,6 +75,7 @@ export function Flow() {
 			}
 
 			// income/checking source → "allocation" edge with editable rule
+			// (retirement targets always have an income source, so they fall here too)
 			if (sourceNode?.type && MONEY_SOURCE_TYPES.has(sourceNode.type)) {
 				const newEdge: Edge<AllocationEdgeData> = {
 					...params,
@@ -124,6 +127,17 @@ export function Flow() {
 			) {
 				return false;
 			}
+			// 401(k) nodes only accept income sources — no checking, savings, etc.
+			if (target.type === "retirementNode" && source.type !== "incomeNode") {
+				return false;
+			}
+			// 401(k) is funded by exactly one income source
+			if (
+				target.type === "retirementNode" &&
+				edges.some((e) => e.target === c.target)
+			) {
+				return false;
+			}
 			// an expense can only be paid from one place — otherwise it gets
 			// charged twice (once per incoming edge)
 			if (
@@ -156,6 +170,7 @@ export function Flow() {
 			elementsSelectable={interactive}
 			snapToGrid
 			snapGrid={[20, 20]}
+			selectNodesOnDrag={false}
 			fitView
 			fitViewOptions={{ padding: 0 }}
 			proOptions={{

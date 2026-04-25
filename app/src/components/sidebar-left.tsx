@@ -3,6 +3,7 @@
 import {
 	Analytics01Icon,
 	CalendarIcon,
+	ChartUpIcon,
 	CubeIcon,
 	Delete02Icon,
 	HomeIcon,
@@ -58,6 +59,11 @@ const data = {
 			title: "Stats",
 			url: "/stats",
 			icon: <HugeiconsIcon icon={Analytics01Icon} strokeWidth={2} />,
+		},
+		{
+			title: "Projections",
+			url: "/projections",
+			icon: <HugeiconsIcon icon={ChartUpIcon} strokeWidth={2} />,
 		},
 		{
 			title: "Simple Form Demo",

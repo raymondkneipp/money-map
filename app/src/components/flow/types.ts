@@ -72,6 +72,16 @@ export type CryptoNodeData = Node<{
 	growthProfile: CryptoGrowthProfile;
 }>;
 
+export type RetirementNodeData = Node<{
+	name: string;
+	/** current balance in USD */
+	principal: number;
+	/** annual percentage return, 0-100 */
+	apy: number;
+	/** employer match as a percent of employee contribution, 0-100 */
+	employerMatch: number;
+}>;
+
 export const EXPENSE_CATEGORIES = [
 	{ id: "housing", label: "Housing" },
 	{ id: "food", label: "Food" },

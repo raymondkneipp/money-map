@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
 import type { SavingsNodeData } from "../types";
+import { selectOnFocus } from "./select-on-focus";
 
 export function SavingsEditor({
 	node,
@@ -45,6 +46,7 @@ export function SavingsEditor({
 							max={10_000_000}
 							step={0.01}
 							value={data.principal}
+							onFocus={selectOnFocus}
 							onChange={(e) => {
 								const capped = Math.min(
 									10_000_000,
@@ -69,6 +71,7 @@ export function SavingsEditor({
 							max={100}
 							step={0.01}
 							value={data.apy}
+							onFocus={selectOnFocus}
 							onChange={(e) => {
 								const capped = Math.min(
 									100,

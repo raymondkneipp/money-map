@@ -1,4 +1,4 @@
-import { Alert02Icon, BankIcon } from "@hugeicons/core-free-icons";
+import { BankIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Position, useEdges, useNodes } from "@xyflow/react";
 import { useMemo } from "react";
@@ -9,7 +9,7 @@ import {
 	BaseNodeHeaderTitle,
 } from "@/components/base-node";
 import { BaseHandle } from "../../base-handle";
-import { computeNodeUtilization, edgeAnnualValue } from "../allocation";
+import { edgeAnnualValue, nodeAnnualInflow } from "../allocation";
 import type { CheckingNodeData } from "../types";
 
 const usd = new Intl.NumberFormat("en-US", {
@@ -28,33 +28,40 @@ export function CheckingNode({
 	const nodes = useNodes();
 	const edges = useEdges();
 
-	const { monthlyIn, monthlyOut, over } = useMemo(() => {
-		const util = computeNodeUtilization(id, nodes, edges);
-		// Uncapped sum of outgoing edges — shows the *attempted* spend even
-		// when it exceeds inflow, so the user sees the real commitment.
-		const requestedAnnual = edges
+	const { monthlyIn, monthlyOut, monthlyNet } = useMemo(() => {
+		const inAnnual = nodeAnnualInflow(id, nodes, edges);
+		const outAnnual = edges
 			.filter(
 				(e) =>
 					e.source === id && (e.type === "allocation" || e.type === "expense"),
 			)
 			.reduce((acc, e) => acc + edgeAnnualValue(e, nodes, edges), 0);
 		return {
-			monthlyIn: util.totalAnnual / 12,
-			monthlyOut: requestedAnnual / 12,
-			over: util.over,
+			monthlyIn: inAnnual / 12,
+			monthlyOut: outAnnual / 12,
+			monthlyNet: (inAnnual - outAnnual) / 12,
 		};
 	}, [id, nodes, edges]);
+
+	const netNegative = monthlyNet < 0;
+	const netPositive = monthlyNet > 0;
+	const netSign = netNegative ? "−" : netPositive ? "+" : "";
+	const netClass = netNegative
+		? "text-destructive"
+		: netPositive
+			? "text-green-600 dark:text-green-400"
+			: "";
 
 	return (
 		<BaseNode
 			className={
-				over
+				netNegative
 					? "w-48 border-destructive bg-destructive/10 in-[.selected]:shadow-destructive/50"
 					: "w-48"
 			}
 		>
 			<BaseNodeHeader
-				className={over ? "border-b border-destructive" : "border-b"}
+				className={netNegative ? "border-b border-destructive" : "border-b"}
 			>
 				<HugeiconsIcon icon={BankIcon} strokeWidth={2} className="size-4" />
 				<BaseNodeHeaderTitle className="font-normal">
@@ -76,26 +83,17 @@ export function CheckingNode({
 					</span>
 				</div>
 				<div className="flex items-baseline justify-between gap-2">
-					<span
-						className={`text-xs ${
-							over ? "text-destructive font-medium" : "text-muted-foreground"
-						}`}
-					>
-						Out
-					</span>
-					<span
-						className={`font-heading font-semibold inline-flex items-center gap-1 ${
-							over ? "text-destructive" : ""
-						}`}
-					>
-						{over && (
-							<HugeiconsIcon
-								icon={Alert02Icon}
-								strokeWidth={2}
-								className="size-3.5"
-							/>
-						)}
+					<span className="text-xs text-muted-foreground">Out</span>
+					<span className="font-heading font-semibold">
 						{usd.format(monthlyOut)}
+						<span className="ml-0.5 text-xs font-normal">/mo</span>
+					</span>
+				</div>
+				<div className="flex items-baseline justify-between gap-2">
+					<span className="text-xs text-muted-foreground">Net</span>
+					<span className={`font-heading font-semibold ${netClass}`}>
+						{netSign}
+						{usd.format(Math.abs(monthlyNet))}
 						<span className="ml-0.5 text-xs font-normal">/mo</span>
 					</span>
 				</div>
@@ -103,11 +101,6 @@ export function CheckingNode({
 					<span className="text-xs text-muted-foreground">APY</span>
 					<span className="text-sm tabular-nums">{data.apy.toFixed(2)}%</span>
 				</div>
-				{over && (
-					<p className="text-xs text-destructive">
-						Outflow exceeds inflow by {usd.format(monthlyOut - monthlyIn)}/mo
-					</p>
-				)}
 				<BaseHandle id="target-1" type="target" position={Position.Left} />
 				<BaseHandle id="source-1" type="source" position={Position.Right} />
 			</BaseNodeContent>
