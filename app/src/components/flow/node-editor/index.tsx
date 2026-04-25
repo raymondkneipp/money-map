@@ -1,30 +1,24 @@
 import { useEdges, useNodes, useReactFlow } from "@xyflow/react";
 import type {
 	AllocationEdgeData,
-	BrokerageNodeData,
+	AssetNodeData,
 	CheckingNodeData,
 	CryptoNodeData,
+	DebtNodeData,
 	ExpenseNodeData,
 	IncomeNodeData,
-	IRANodeData,
-	OtherAssetNodeData,
 	RetirementNodeData,
 	SavingsNodeData,
 } from "../types";
 import { AssetEditor } from "./asset-editor";
 import { CheckingEditor } from "./checking-editor";
 import { CryptoEditor } from "./crypto-editor";
+import { DebtEditor } from "./debt-editor";
 import { EdgeEditor } from "./edge-editor";
 import { ExpenseEditor } from "./expense-editor";
 import { IncomeEditor } from "./income-editor";
 import { RetirementEditor } from "./retirement-editor";
 import { SavingsEditor } from "./savings-editor";
-
-const ASSET_TITLE: Record<string, string> = {
-	iraNode: "Edit IRA",
-	brokerageNode: "Edit Brokerage",
-	otherAssetNode: "Edit Asset",
-};
 
 export function NodeEditor() {
 	const nodes = useNodes();
@@ -83,18 +77,19 @@ export function NodeEditor() {
 				/>
 			);
 		}
-		if (
-			selectedNode.type === "iraNode" ||
-			selectedNode.type === "brokerageNode" ||
-			selectedNode.type === "otherAssetNode"
-		) {
+		if (selectedNode.type === "debtNode") {
+			return (
+				<DebtEditor
+					node={selectedNode as DebtNodeData}
+					onChange={updateNodeData}
+				/>
+			);
+		}
+		if (selectedNode.type === "assetNode") {
 			return (
 				<AssetEditor
-					node={
-						selectedNode as IRANodeData | BrokerageNodeData | OtherAssetNodeData
-					}
+					node={selectedNode as AssetNodeData}
 					onChange={updateNodeData}
-					title={ASSET_TITLE[selectedNode.type]}
 				/>
 			);
 		}

@@ -1,3 +1,5 @@
+import { HugeiconsIcon } from "@hugeicons/react";
+import { useMemo } from "react";
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
@@ -7,25 +9,33 @@ import {
 	InputGroupText,
 } from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
-import type {
-	BrokerageNodeData,
-	IRANodeData,
-	OtherAssetNodeData,
-} from "../types";
+import {
+	Select,
+	SelectContent,
+	SelectGroup,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+import { ASSET_TYPE_ICON } from "../nodes/asset-node";
+import { ASSET_TYPES, type AssetNodeData, type AssetType } from "../types";
 import { selectOnFocus } from "./select-on-focus";
-
-type AssetNode = IRANodeData | BrokerageNodeData | OtherAssetNodeData;
 
 export function AssetEditor({
 	node,
 	onChange,
-	title,
 }: {
-	node: AssetNode;
-	onChange: (id: string, data: Partial<AssetNode["data"]>) => void;
-	title: string;
+	node: AssetNodeData;
+	onChange: (id: string, data: Partial<AssetNodeData["data"]>) => void;
 }) {
 	const { id, data } = node;
+
+	const title = useMemo(
+		() =>
+			ASSET_TYPES.find((t) => t.id === data.assetType)?.editTitle ??
+			"Edit Asset",
+		[data.assetType],
+	);
 
 	return (
 		<div className="px-4 py-3">
@@ -38,6 +48,31 @@ export function AssetEditor({
 						value={data.name}
 						onChange={(e) => onChange(id, { name: e.target.value })}
 					/>
+				</Field>
+				<Field>
+					<Label htmlFor={`asset-type-${id}`}>Type</Label>
+					<Select
+						value={data.assetType}
+						onValueChange={(v) => onChange(id, { assetType: v as AssetType })}
+					>
+						<SelectTrigger id={`asset-type-${id}`}>
+							<SelectValue />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectGroup>
+								{ASSET_TYPES.map((t) => (
+									<SelectItem key={t.id} value={t.id}>
+										<HugeiconsIcon
+											icon={ASSET_TYPE_ICON[t.id]}
+											strokeWidth={2}
+											className="size-3.5"
+										/>
+										{t.label}
+									</SelectItem>
+								))}
+							</SelectGroup>
+						</SelectContent>
+					</Select>
 				</Field>
 				<Field>
 					<Label htmlFor={`asset-principal-${id}`}>Current balance</Label>

@@ -14,16 +14,13 @@ import {
 } from "@/components/base-node";
 import { BaseHandle } from "../../base-handle";
 import { nodeAnnualInflow } from "../allocation";
-import type {
-	BrokerageNodeData,
-	IRANodeData,
-	OtherAssetNodeData,
-} from "../types";
+import type { AssetNodeData, AssetType } from "../types";
 
-type AssetData =
-	| IRANodeData["data"]
-	| BrokerageNodeData["data"]
-	| OtherAssetNodeData["data"];
+export const ASSET_TYPE_ICON = {
+	ira: Leaf01Icon,
+	brokerage: AnalyticsUpIcon,
+	other: CubeIcon,
+} as const satisfies Record<AssetType, unknown>;
 
 const usd = new Intl.NumberFormat("en-US", {
 	style: "currency",
@@ -31,14 +28,12 @@ const usd = new Intl.NumberFormat("en-US", {
 	maximumFractionDigits: 0,
 });
 
-function AssetCard({
+export function AssetNode({
 	id,
 	data,
-	icon,
 }: {
 	id: string;
-	data: AssetData;
-	icon: typeof Leaf01Icon;
+	data: AssetNodeData["data"];
 }) {
 	const nodes = useNodes();
 	const edges = useEdges();
@@ -51,7 +46,11 @@ function AssetCard({
 	return (
 		<BaseNode className="w-48 bg-assets border-assets-border in-[.selected]:shadow-assets-border/50">
 			<BaseNodeHeader className="border-b border-assets-border">
-				<HugeiconsIcon icon={icon} strokeWidth={2} className="size-4" />
+				<HugeiconsIcon
+					icon={ASSET_TYPE_ICON[data.assetType]}
+					strokeWidth={2}
+					className="size-4"
+				/>
 				<BaseNodeHeaderTitle className="font-normal">
 					{data.name}
 				</BaseNodeHeaderTitle>
@@ -78,22 +77,4 @@ function AssetCard({
 			</BaseNodeContent>
 		</BaseNode>
 	);
-}
-
-export function IRANode(props: { id: string; data: IRANodeData["data"] }) {
-	return <AssetCard {...props} icon={Leaf01Icon} />;
-}
-
-export function BrokerageNode(props: {
-	id: string;
-	data: BrokerageNodeData["data"];
-}) {
-	return <AssetCard {...props} icon={AnalyticsUpIcon} />;
-}
-
-export function OtherAssetNode(props: {
-	id: string;
-	data: OtherAssetNodeData["data"];
-}) {
-	return <AssetCard {...props} icon={CubeIcon} />;
 }

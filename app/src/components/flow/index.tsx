@@ -16,9 +16,10 @@ import { BaseNodeFullDemo } from "./base-node-full-demo";
 import { initialEdges, initialNodes } from "./data";
 import { ExpenseEdge } from "./expense-edge";
 import { FlowToolbar } from "./flow-toolbar";
-import { BrokerageNode, IRANode, OtherAssetNode } from "./nodes/asset-node";
+import { AssetNode } from "./nodes/asset-node";
 import { CheckingNode } from "./nodes/checking-node";
 import { CryptoNode } from "./nodes/crypto-node";
+import { DebtNode } from "./nodes/debt-node";
 import { ExpenseNode } from "./nodes/expense-node";
 import { IncomeNode } from "./nodes/income-node";
 import { RetirementNode } from "./nodes/retirement-node";
@@ -33,17 +34,11 @@ const nodeTypes = {
 	expenseNode: ExpenseNode,
 	cryptoNode: CryptoNode,
 	retirementNode: RetirementNode,
-	iraNode: IRANode,
-	brokerageNode: BrokerageNode,
-	otherAssetNode: OtherAssetNode,
+	assetNode: AssetNode,
+	debtNode: DebtNode,
 };
 
 const MONEY_SOURCE_TYPES = new Set(["incomeNode", "checkingNode"]);
-const CHECKING_ONLY_ASSETS = new Set([
-	"iraNode",
-	"brokerageNode",
-	"otherAssetNode",
-]);
 
 const edgeTypes = {
 	allocation: AllocationEdge,
@@ -141,11 +136,11 @@ export function Flow() {
 				return false;
 			}
 			// IRA / brokerage / other assets are funded only from checking
-			if (
-				target.type &&
-				CHECKING_ONLY_ASSETS.has(target.type) &&
-				source.type !== "checkingNode"
-			) {
+			if (target.type === "assetNode" && source.type !== "checkingNode") {
+				return false;
+			}
+			// debts are paid down only from checking
+			if (target.type === "debtNode" && source.type !== "checkingNode") {
 				return false;
 			}
 			// 401(k) is funded by exactly one income source

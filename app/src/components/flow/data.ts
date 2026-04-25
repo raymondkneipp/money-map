@@ -1,20 +1,22 @@
 import type { Edge, Node } from "@xyflow/react";
 import type {
 	AllocationEdgeData,
+	AssetNodeData,
 	CheckingNodeData,
-	CryptoNodeData,
+	DebtNodeData,
 	ExpenseNodeData,
 	IncomeNodeData,
+	RetirementNodeData,
 	SavingsNodeData,
 } from "./types";
 
 const incomeNodes: IncomeNodeData[] = [
 	{
 		id: "income-salary",
-		position: { x: 0, y: 60 },
+		position: { x: 0, y: 120 },
 		data: {
 			name: "Salary",
-			amount: 5200,
+			amount: 6500,
 			frequency: "monthly",
 			passive: false,
 		},
@@ -22,23 +24,12 @@ const incomeNodes: IncomeNodeData[] = [
 	},
 	{
 		id: "income-freelance",
-		position: { x: 0, y: 240 },
+		position: { x: 0, y: 360 },
 		data: {
-			name: "Freelance",
-			amount: 800,
+			name: "Side gig",
+			amount: 1200,
 			frequency: "monthly",
 			passive: false,
-		},
-		type: "incomeNode",
-	},
-	{
-		id: "income-dividends",
-		position: { x: 0, y: 420 },
-		data: {
-			name: "Dividends",
-			amount: 140,
-			frequency: "monthly",
-			passive: true,
 		},
 		type: "incomeNode",
 	},
@@ -53,36 +44,80 @@ const checkingNodes: CheckingNodeData[] = [
 	},
 ];
 
+const retirementNodes: RetirementNodeData[] = [
+	{
+		id: "retirement-401k",
+		position: { x: 360, y: -80 },
+		data: { name: "401(k)", principal: 42000, apy: 7, employerMatch: 50 },
+		type: "retirementNode",
+	},
+];
+
 const savingsNodes: SavingsNodeData[] = [
 	{
 		id: "savings-emergency",
-		position: { x: 760, y: 720 },
+		position: { x: 760, y: 140 },
 		data: { name: "Emergency fund", principal: 12500, apy: 4.25 },
 		type: "savingsNode",
 	},
 ];
 
-const cryptoNodes: CryptoNodeData[] = [
+const assetNodes: AssetNodeData[] = [
 	{
-		id: "crypto-btc",
-		position: { x: 760, y: 900 },
+		id: "asset-ira",
+		position: { x: 760, y: -220 },
+		data: { name: "Roth IRA", assetType: "ira", principal: 18500, apy: 7 },
+		type: "assetNode",
+	},
+	{
+		id: "asset-brokerage",
+		position: { x: 760, y: -40 },
 		data: {
-			name: "Bitcoin",
-			coin: "bitcoin",
-			principal: 0.08,
-			growthProfile: "moderate",
+			name: "Brokerage",
+			assetType: "brokerage",
+			principal: 9500,
+			apy: 8,
 		},
-		type: "cryptoNode",
+		type: "assetNode",
+	},
+];
+
+const debtNodes: DebtNodeData[] = [
+	{
+		id: "debt-credit-card",
+		position: { x: 760, y: 320 },
+		data: {
+			name: "Credit card",
+			debtType: "creditCard",
+			principal: 3200,
+			apr: 22,
+			minimumPayment: 80,
+			minimumFrequency: "monthly",
+		},
+		type: "debtNode",
+	},
+	{
+		id: "debt-student-loan",
+		position: { x: 760, y: 500 },
+		data: {
+			name: "Student loan",
+			debtType: "studentLoan",
+			principal: 22000,
+			apr: 5.5,
+			minimumPayment: 280,
+			minimumFrequency: "monthly",
+		},
+		type: "debtNode",
 	},
 ];
 
 const expenseNodes: ExpenseNodeData[] = [
 	{
 		id: "expense-rent",
-		position: { x: 760, y: -120 },
+		position: { x: 1100, y: -220 },
 		data: {
 			name: "Rent",
-			amount: 1800,
+			amount: 1900,
 			frequency: "monthly",
 			category: "housing",
 		},
@@ -90,7 +125,7 @@ const expenseNodes: ExpenseNodeData[] = [
 	},
 	{
 		id: "expense-groceries",
-		position: { x: 760, y: 60 },
+		position: { x: 1100, y: -80 },
 		data: {
 			name: "Groceries",
 			amount: 480,
@@ -101,10 +136,10 @@ const expenseNodes: ExpenseNodeData[] = [
 	},
 	{
 		id: "expense-utilities",
-		position: { x: 760, y: 200 },
+		position: { x: 1100, y: 60 },
 		data: {
 			name: "Utilities",
-			amount: 160,
+			amount: 180,
 			frequency: "monthly",
 			category: "utilities",
 		},
@@ -112,7 +147,7 @@ const expenseNodes: ExpenseNodeData[] = [
 	},
 	{
 		id: "expense-transport",
-		position: { x: 760, y: 320 },
+		position: { x: 1100, y: 200 },
 		data: {
 			name: "Transit + gas",
 			amount: 140,
@@ -123,56 +158,23 @@ const expenseNodes: ExpenseNodeData[] = [
 	},
 	{
 		id: "expense-insurance",
-		position: { x: 760, y: 440 },
+		position: { x: 1100, y: 340 },
 		data: {
 			name: "Insurance",
-			amount: 220,
+			amount: 200,
 			frequency: "monthly",
 			category: "insurance",
 		},
 		type: "expenseNode",
 	},
 	{
-		id: "expense-healthcare",
-		position: { x: 760, y: 560 },
-		data: {
-			name: "Healthcare",
-			amount: 90,
-			frequency: "monthly",
-			category: "healthcare",
-		},
-		type: "expenseNode",
-	},
-	{
 		id: "expense-streaming",
-		position: { x: 1100, y: -120 },
+		position: { x: 1100, y: 480 },
 		data: {
 			name: "Streaming",
-			amount: 45,
+			amount: 35,
 			frequency: "monthly",
 			category: "entertainment",
-		},
-		type: "expenseNode",
-	},
-	{
-		id: "expense-personal",
-		position: { x: 1100, y: 60 },
-		data: {
-			name: "Personal",
-			amount: 180,
-			frequency: "monthly",
-			category: "personal",
-		},
-		type: "expenseNode",
-	},
-	{
-		id: "expense-gym",
-		position: { x: 1100, y: 200 },
-		data: {
-			name: "Gym",
-			amount: 40,
-			frequency: "monthly",
-			category: "personal",
 		},
 		type: "expenseNode",
 	},
@@ -181,19 +183,21 @@ const expenseNodes: ExpenseNodeData[] = [
 export const initialNodes: Node[] = [
 	...incomeNodes,
 	...checkingNodes,
+	...retirementNodes,
 	...savingsNodes,
-	...cryptoNodes,
+	...assetNodes,
+	...debtNodes,
 	...expenseNodes,
 ];
 
 export const initialEdges: Edge[] = [
-	// salary → 10% to savings, rest to checking
+	// salary 6% → 401(k), remainder to checking
 	{
-		id: "salary-savings",
+		id: "salary-401k",
 		source: "income-salary",
-		target: "savings-emergency",
+		target: "retirement-401k",
 		type: "allocation",
-		data: { mode: "percent", percent: 10 } satisfies AllocationEdgeData,
+		data: { mode: "percent", percent: 6 } satisfies AllocationEdgeData,
 	},
 	{
 		id: "salary-checking",
@@ -202,19 +206,11 @@ export const initialEdges: Edge[] = [
 		type: "allocation",
 		data: { mode: "remainder" } satisfies AllocationEdgeData,
 	},
-	// freelance fully into checking
+	// side gig fully into checking
 	{
 		id: "freelance-checking",
 		source: "income-freelance",
 		target: "checking-main",
-		type: "allocation",
-		data: { mode: "remainder" } satisfies AllocationEdgeData,
-	},
-	// dividends fully into savings
-	{
-		id: "dividends-savings",
-		source: "income-dividends",
-		target: "savings-emergency",
 		type: "allocation",
 		data: { mode: "remainder" } satisfies AllocationEdgeData,
 	},
@@ -250,38 +246,68 @@ export const initialEdges: Edge[] = [
 		type: "expense",
 	},
 	{
-		id: "checking-healthcare",
-		source: "checking-main",
-		target: "expense-healthcare",
-		type: "expense",
-	},
-	{
 		id: "checking-streaming",
 		source: "checking-main",
 		target: "expense-streaming",
 		type: "expense",
 	},
+	// checking → savings, $400/mo
 	{
-		id: "checking-personal",
+		id: "checking-savings",
 		source: "checking-main",
-		target: "expense-personal",
-		type: "expense",
-	},
-	{
-		id: "checking-gym",
-		source: "checking-main",
-		target: "expense-gym",
-		type: "expense",
-	},
-	// checking → crypto, $100/mo dollar-cost average
-	{
-		id: "checking-btc",
-		source: "checking-main",
-		target: "crypto-btc",
+		target: "savings-emergency",
 		type: "allocation",
 		data: {
 			mode: "fixed",
-			amount: 100,
+			amount: 400,
+			frequency: "monthly",
+		} satisfies AllocationEdgeData,
+	},
+	// checking → IRA, $500/mo
+	{
+		id: "checking-ira",
+		source: "checking-main",
+		target: "asset-ira",
+		type: "allocation",
+		data: {
+			mode: "fixed",
+			amount: 500,
+			frequency: "monthly",
+		} satisfies AllocationEdgeData,
+	},
+	// checking → brokerage, $400/mo
+	{
+		id: "checking-brokerage",
+		source: "checking-main",
+		target: "asset-brokerage",
+		type: "allocation",
+		data: {
+			mode: "fixed",
+			amount: 400,
+			frequency: "monthly",
+		} satisfies AllocationEdgeData,
+	},
+	// checking → credit card payoff, $200/mo (above $80 min)
+	{
+		id: "checking-credit-card",
+		source: "checking-main",
+		target: "debt-credit-card",
+		type: "allocation",
+		data: {
+			mode: "fixed",
+			amount: 200,
+			frequency: "monthly",
+		} satisfies AllocationEdgeData,
+	},
+	// checking → student loan, $320/mo (above $280 min)
+	{
+		id: "checking-student-loan",
+		source: "checking-main",
+		target: "debt-student-loan",
+		type: "allocation",
+		data: {
+			mode: "fixed",
+			amount: 320,
 			frequency: "monthly",
 		} satisfies AllocationEdgeData,
 	},

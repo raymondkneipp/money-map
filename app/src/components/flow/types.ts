@@ -72,24 +72,17 @@ export type CryptoNodeData = Node<{
 	growthProfile: CryptoGrowthProfile;
 }>;
 
-export type IRANodeData = Node<{
-	name: string;
-	/** current balance in USD */
-	principal: number;
-	/** annual percentage return, 0-100 */
-	apy: number;
-}>;
+export const ASSET_TYPES = [
+	{ id: "ira", label: "IRA / Roth IRA", editTitle: "Edit IRA" },
+	{ id: "brokerage", label: "Brokerage", editTitle: "Edit Brokerage" },
+	{ id: "other", label: "Other", editTitle: "Edit Asset" },
+] as const;
 
-export type BrokerageNodeData = Node<{
-	name: string;
-	/** current balance in USD */
-	principal: number;
-	/** annual percentage return, 0-100 */
-	apy: number;
-}>;
+export type AssetType = (typeof ASSET_TYPES)[number]["id"];
 
-export type OtherAssetNodeData = Node<{
+export type AssetNodeData = Node<{
 	name: string;
+	assetType: AssetType;
 	/** current balance in USD */
 	principal: number;
 	/** annual percentage return, 0-100 */
@@ -104,6 +97,30 @@ export type RetirementNodeData = Node<{
 	apy: number;
 	/** employer match as a percent of employee contribution, 0-100 */
 	employerMatch: number;
+}>;
+
+export const DEBT_TYPES = [
+	{ id: "creditCard", label: "Credit card" },
+	{ id: "studentLoan", label: "Student loan" },
+	{ id: "autoLoan", label: "Auto loan" },
+	{ id: "mortgage", label: "Mortgage" },
+	{ id: "personalLoan", label: "Personal loan" },
+	{ id: "medical", label: "Medical" },
+	{ id: "other", label: "Other" },
+] as const;
+
+export type DebtType = (typeof DEBT_TYPES)[number]["id"];
+
+export type DebtNodeData = Node<{
+	name: string;
+	debtType: DebtType;
+	/** outstanding balance in USD */
+	principal: number;
+	/** annual percentage rate, 0-100 */
+	apr: number;
+	/** statement minimum payment per period */
+	minimumPayment: number;
+	minimumFrequency: Frequency;
 }>;
 
 export const EXPENSE_CATEGORIES = [

@@ -2,6 +2,7 @@ import {
 	AnalyticsUpIcon,
 	BankIcon,
 	BitcoinCircleIcon,
+	CreditCardIcon,
 	CubeIcon,
 	FullscreenIcon,
 	Leaf01Icon,
@@ -36,24 +37,16 @@ type NodeKind =
 	| "expenseNode"
 	| "cryptoNode"
 	| "retirementNode"
-	| "iraNode"
-	| "brokerageNode"
-	| "otherAssetNode";
-
-const ASSET_KINDS = new Set<NodeKind>([
-	"savingsNode",
-	"cryptoNode",
-	"retirementNode",
-	"iraNode",
-	"brokerageNode",
-	"otherAssetNode",
-]);
+	| "assetNode"
+	| "debtNode";
 
 const NODE_PRESETS: Array<{
 	kind: NodeKind;
 	label: string;
 	icon: typeof Money01Icon;
 	iconColor?: string;
+	/** when set, this preset is grouped under that submenu in the Add menu */
+	submenu?: "assets";
 	data: Record<string, unknown>;
 }> = [
 	{
@@ -79,6 +72,7 @@ const NODE_PRESETS: Array<{
 		label: "Savings",
 		icon: PiggyBankIcon,
 		iconColor: "var(--color-blue-500)",
+		submenu: "assets",
 		data: { name: "Savings", principal: 0, apy: 4 },
 	},
 	{
@@ -98,6 +92,7 @@ const NODE_PRESETS: Array<{
 		label: "Crypto",
 		icon: BitcoinCircleIcon,
 		iconColor: "var(--color-blue-500)",
+		submenu: "assets",
 		data: {
 			name: "BTC",
 			coin: "bitcoin",
@@ -110,6 +105,7 @@ const NODE_PRESETS: Array<{
 		label: "401(k)",
 		icon: RockingChairIcon,
 		iconColor: "var(--color-blue-500)",
+		submenu: "assets",
 		data: {
 			name: "401(k)",
 			principal: 0,
@@ -118,25 +114,47 @@ const NODE_PRESETS: Array<{
 		},
 	},
 	{
-		kind: "iraNode",
+		kind: "assetNode",
 		label: "IRA / Roth IRA",
 		icon: Leaf01Icon,
 		iconColor: "var(--color-blue-500)",
-		data: { name: "Roth IRA", principal: 0, apy: 7 },
+		submenu: "assets",
+		data: { name: "Roth IRA", assetType: "ira", principal: 0, apy: 7 },
 	},
 	{
-		kind: "brokerageNode",
+		kind: "assetNode",
 		label: "Brokerage",
 		icon: AnalyticsUpIcon,
 		iconColor: "var(--color-blue-500)",
-		data: { name: "Brokerage", principal: 0, apy: 8 },
+		submenu: "assets",
+		data: {
+			name: "Brokerage",
+			assetType: "brokerage",
+			principal: 0,
+			apy: 8,
+		},
 	},
 	{
-		kind: "otherAssetNode",
+		kind: "assetNode",
 		label: "Other",
 		icon: CubeIcon,
 		iconColor: "var(--color-blue-500)",
-		data: { name: "Asset", principal: 0, apy: 0 },
+		submenu: "assets",
+		data: { name: "Asset", assetType: "other", principal: 0, apy: 0 },
+	},
+	{
+		kind: "debtNode",
+		label: "Debt",
+		icon: CreditCardIcon,
+		iconColor: "var(--color-red-500)",
+		data: {
+			name: "Credit card",
+			debtType: "creditCard",
+			principal: 1000,
+			apr: 22,
+			minimumPayment: 25,
+			minimumFrequency: "monthly",
+		},
 	},
 ];
 
@@ -227,10 +245,10 @@ export function FlowToolbar({
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="center" side="top">
-						{NODE_PRESETS.filter((p) => !ASSET_KINDS.has(p.kind)).map(
+						{NODE_PRESETS.filter((p) => p.submenu !== "assets").map(
 							(preset) => (
 								<DropdownMenuItem
-									key={preset.kind}
+									key={preset.label}
 									onSelect={() => onAdd(preset)}
 								>
 									<HugeiconsIcon
@@ -254,10 +272,10 @@ export function FlowToolbar({
 								<span>Assets</span>
 							</DropdownMenuSubTrigger>
 							<DropdownMenuSubContent>
-								{NODE_PRESETS.filter((p) => ASSET_KINDS.has(p.kind)).map(
+								{NODE_PRESETS.filter((p) => p.submenu === "assets").map(
 									(preset) => (
 										<DropdownMenuItem
-											key={preset.kind}
+											key={preset.label}
 											onSelect={() => onAdd(preset)}
 										>
 											<HugeiconsIcon
