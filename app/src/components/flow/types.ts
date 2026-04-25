@@ -72,6 +72,30 @@ export type CryptoNodeData = Node<{
 	growthProfile: CryptoGrowthProfile;
 }>;
 
+export type IRANodeData = Node<{
+	name: string;
+	/** current balance in USD */
+	principal: number;
+	/** annual percentage return, 0-100 */
+	apy: number;
+}>;
+
+export type BrokerageNodeData = Node<{
+	name: string;
+	/** current balance in USD */
+	principal: number;
+	/** annual percentage return, 0-100 */
+	apy: number;
+}>;
+
+export type OtherAssetNodeData = Node<{
+	name: string;
+	/** current balance in USD */
+	principal: number;
+	/** annual percentage return, 0-100 */
+	apy: number;
+}>;
+
 export type RetirementNodeData = Node<{
 	name: string;
 	/** current balance in USD */

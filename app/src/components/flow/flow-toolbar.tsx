@@ -1,7 +1,10 @@
 import {
+	AnalyticsUpIcon,
 	BankIcon,
 	BitcoinCircleIcon,
+	CubeIcon,
 	FullscreenIcon,
+	Leaf01Icon,
 	Money01Icon,
 	PiggyBankIcon,
 	PlusSignIcon,
@@ -19,6 +22,9 @@ import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
+	DropdownMenuSub,
+	DropdownMenuSubContent,
+	DropdownMenuSubTrigger,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
@@ -29,7 +35,19 @@ type NodeKind =
 	| "savingsNode"
 	| "expenseNode"
 	| "cryptoNode"
-	| "retirementNode";
+	| "retirementNode"
+	| "iraNode"
+	| "brokerageNode"
+	| "otherAssetNode";
+
+const ASSET_KINDS = new Set<NodeKind>([
+	"savingsNode",
+	"cryptoNode",
+	"retirementNode",
+	"iraNode",
+	"brokerageNode",
+	"otherAssetNode",
+]);
 
 const NODE_PRESETS: Array<{
 	kind: NodeKind;
@@ -98,6 +116,27 @@ const NODE_PRESETS: Array<{
 			apy: 7,
 			employerMatch: 50,
 		},
+	},
+	{
+		kind: "iraNode",
+		label: "IRA / Roth IRA",
+		icon: Leaf01Icon,
+		iconColor: "var(--color-blue-500)",
+		data: { name: "Roth IRA", principal: 0, apy: 7 },
+	},
+	{
+		kind: "brokerageNode",
+		label: "Brokerage",
+		icon: AnalyticsUpIcon,
+		iconColor: "var(--color-blue-500)",
+		data: { name: "Brokerage", principal: 0, apy: 8 },
+	},
+	{
+		kind: "otherAssetNode",
+		label: "Other",
+		icon: CubeIcon,
+		iconColor: "var(--color-blue-500)",
+		data: { name: "Asset", principal: 0, apy: 0 },
 	},
 ];
 
@@ -188,21 +227,54 @@ export function FlowToolbar({
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="center" side="top">
-						{NODE_PRESETS.map((preset) => (
-							<DropdownMenuItem
-								key={preset.kind}
-								onSelect={() => onAdd(preset)}
-							>
+						{NODE_PRESETS.filter((p) => !ASSET_KINDS.has(p.kind)).map(
+							(preset) => (
+								<DropdownMenuItem
+									key={preset.kind}
+									onSelect={() => onAdd(preset)}
+								>
+									<HugeiconsIcon
+										icon={preset.icon}
+										strokeWidth={2}
+										style={
+											preset.iconColor ? { color: preset.iconColor } : undefined
+										}
+									/>
+									<span>{preset.label}</span>
+								</DropdownMenuItem>
+							),
+						)}
+						<DropdownMenuSub>
+							<DropdownMenuSubTrigger>
 								<HugeiconsIcon
-									icon={preset.icon}
+									icon={PiggyBankIcon}
 									strokeWidth={2}
-									style={
-										preset.iconColor ? { color: preset.iconColor } : undefined
-									}
+									style={{ color: "var(--color-blue-500)" }}
 								/>
-								<span>{preset.label}</span>
-							</DropdownMenuItem>
-						))}
+								<span>Assets</span>
+							</DropdownMenuSubTrigger>
+							<DropdownMenuSubContent>
+								{NODE_PRESETS.filter((p) => ASSET_KINDS.has(p.kind)).map(
+									(preset) => (
+										<DropdownMenuItem
+											key={preset.kind}
+											onSelect={() => onAdd(preset)}
+										>
+											<HugeiconsIcon
+												icon={preset.icon}
+												strokeWidth={2}
+												style={
+													preset.iconColor
+														? { color: preset.iconColor }
+														: undefined
+												}
+											/>
+											<span>{preset.label}</span>
+										</DropdownMenuItem>
+									),
+								)}
+							</DropdownMenuSubContent>
+						</DropdownMenuSub>
 					</DropdownMenuContent>
 				</DropdownMenu>
 			</div>
