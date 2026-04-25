@@ -5,6 +5,7 @@ import type {
 	CheckingNodeData,
 	CryptoNodeData,
 	DebtNodeData,
+	EmergencyFundNodeData,
 	ExpenseNodeData,
 	IncomeNodeData,
 	RetirementNodeData,
@@ -15,6 +16,7 @@ import { CheckingEditor } from "./checking-editor";
 import { CryptoEditor } from "./crypto-editor";
 import { DebtEditor } from "./debt-editor";
 import { EdgeEditor } from "./edge-editor";
+import { EmergencyFundEditor } from "./emergency-fund-editor";
 import { ExpenseEditor } from "./expense-editor";
 import { IncomeEditor } from "./income-editor";
 import { RetirementEditor } from "./retirement-editor";
@@ -49,6 +51,14 @@ export function NodeEditor() {
 			return (
 				<SavingsEditor
 					node={selectedNode as SavingsNodeData}
+					onChange={updateNodeData}
+				/>
+			);
+		}
+		if (selectedNode.type === "emergencyFundNode") {
+			return (
+				<EmergencyFundEditor
+					node={selectedNode as EmergencyFundNodeData}
 					onChange={updateNodeData}
 				/>
 			);

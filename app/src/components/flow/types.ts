@@ -41,6 +41,16 @@ export type SavingsNodeData = Node<{
 	apy: number;
 }>;
 
+export type EmergencyFundNodeData = Node<{
+	name: string;
+	/** current balance in USD */
+	principal: number;
+	/** annual percentage yield, 0-100 */
+	apy: number;
+	/** target months of expenses to cover, typically 3-6 */
+	targetMonths: number;
+}>;
+
 export const CRYPTO_COINS = [
 	{ id: "bitcoin", symbol: "BTC", name: "Bitcoin" },
 	{ id: "ethereum", symbol: "ETH", name: "Ethereum" },
@@ -160,4 +170,23 @@ export type AllocationEdge = Edge<AllocationEdgeData, "allocation">;
 
 export function toAnnual(amount: number, frequency: Frequency): number {
 	return amount * FREQUENCY_BY_ID[frequency].perYear;
+}
+
+/**
+ * Sum of recurring monthly outflows that an emergency fund should cover:
+ * all expense nodes plus debt minimum payments. This is what gets multiplied
+ * by `targetMonths` to produce the emergency fund target.
+ */
+export function monthlyEssentialOutflow(nodes: Node[]): number {
+	let monthly = 0;
+	for (const n of nodes) {
+		if (n.type === "expenseNode") {
+			const d = (n as ExpenseNodeData).data;
+			monthly += toAnnual(d.amount, d.frequency) / 12;
+		} else if (n.type === "debtNode") {
+			const d = (n as DebtNodeData).data;
+			monthly += toAnnual(d.minimumPayment, d.minimumFrequency) / 12;
+		}
+	}
+	return monthly;
 }

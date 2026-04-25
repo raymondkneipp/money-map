@@ -20,6 +20,7 @@ import { AssetNode } from "./nodes/asset-node";
 import { CheckingNode } from "./nodes/checking-node";
 import { CryptoNode } from "./nodes/crypto-node";
 import { DebtNode } from "./nodes/debt-node";
+import { EmergencyFundNode } from "./nodes/emergency-fund-node";
 import { ExpenseNode } from "./nodes/expense-node";
 import { IncomeNode } from "./nodes/income-node";
 import { RetirementNode } from "./nodes/retirement-node";
@@ -31,6 +32,7 @@ const nodeTypes = {
 	incomeNode: IncomeNode,
 	checkingNode: CheckingNode,
 	savingsNode: SavingsNode,
+	emergencyFundNode: EmergencyFundNode,
 	expenseNode: ExpenseNode,
 	cryptoNode: CryptoNode,
 	retirementNode: RetirementNode,
@@ -115,6 +117,14 @@ export function Flow() {
 			) {
 				return false;
 			}
+			// emergency fund accepts incomes or checking accounts as sources
+			if (
+				target.type === "emergencyFundNode" &&
+				source.type !== "incomeNode" &&
+				source.type !== "checkingNode"
+			) {
+				return false;
+			}
 			// crypto nodes accept incomes or checking accounts as sources
 			if (
 				target.type === "cryptoNode" &&
@@ -184,7 +194,7 @@ export function Flow() {
 			snapGrid={[20, 20]}
 			selectNodesOnDrag={false}
 			fitView
-			fitViewOptions={{ padding: 0 }}
+			fitViewOptions={{ padding: 0.1 }}
 			proOptions={{
 				hideAttribution: true,
 			}}

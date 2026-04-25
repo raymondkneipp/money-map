@@ -4,10 +4,10 @@ import type {
 	AssetNodeData,
 	CheckingNodeData,
 	DebtNodeData,
+	EmergencyFundNodeData,
 	ExpenseNodeData,
 	IncomeNodeData,
 	RetirementNodeData,
-	SavingsNodeData,
 } from "./types";
 
 const incomeNodes: IncomeNodeData[] = [
@@ -53,25 +53,30 @@ const retirementNodes: RetirementNodeData[] = [
 	},
 ];
 
-const savingsNodes: SavingsNodeData[] = [
+const emergencyFundNodes: EmergencyFundNodeData[] = [
 	{
-		id: "savings-emergency",
+		id: "emergency-fund-main",
 		position: { x: 760, y: 140 },
-		data: { name: "Emergency fund", principal: 12500, apy: 4.25 },
-		type: "savingsNode",
+		data: {
+			name: "Emergency fund",
+			principal: 12500,
+			apy: 4.25,
+			targetMonths: 6,
+		},
+		type: "emergencyFundNode",
 	},
 ];
 
 const assetNodes: AssetNodeData[] = [
 	{
 		id: "asset-ira",
-		position: { x: 760, y: -220 },
+		position: { x: 760, y: -180 },
 		data: { name: "Roth IRA", assetType: "ira", principal: 18500, apy: 7 },
 		type: "assetNode",
 	},
 	{
 		id: "asset-brokerage",
-		position: { x: 760, y: -40 },
+		position: { x: 760, y: -20 },
 		data: {
 			name: "Brokerage",
 			assetType: "brokerage",
@@ -85,7 +90,7 @@ const assetNodes: AssetNodeData[] = [
 const debtNodes: DebtNodeData[] = [
 	{
 		id: "debt-credit-card",
-		position: { x: 760, y: 320 },
+		position: { x: 760, y: 420 },
 		data: {
 			name: "Credit card",
 			debtType: "creditCard",
@@ -98,7 +103,7 @@ const debtNodes: DebtNodeData[] = [
 	},
 	{
 		id: "debt-student-loan",
-		position: { x: 760, y: 500 },
+		position: { x: 760, y: 600 },
 		data: {
 			name: "Student loan",
 			debtType: "studentLoan",
@@ -114,7 +119,7 @@ const debtNodes: DebtNodeData[] = [
 const expenseNodes: ExpenseNodeData[] = [
 	{
 		id: "expense-rent",
-		position: { x: 1100, y: -220 },
+		position: { x: 1100, y: -180 },
 		data: {
 			name: "Rent",
 			amount: 1900,
@@ -125,7 +130,7 @@ const expenseNodes: ExpenseNodeData[] = [
 	},
 	{
 		id: "expense-groceries",
-		position: { x: 1100, y: -80 },
+		position: { x: 1100, y: -60 },
 		data: {
 			name: "Groceries",
 			amount: 480,
@@ -147,7 +152,7 @@ const expenseNodes: ExpenseNodeData[] = [
 	},
 	{
 		id: "expense-transport",
-		position: { x: 1100, y: 200 },
+		position: { x: 1100, y: 180 },
 		data: {
 			name: "Transit + gas",
 			amount: 140,
@@ -158,7 +163,7 @@ const expenseNodes: ExpenseNodeData[] = [
 	},
 	{
 		id: "expense-insurance",
-		position: { x: 1100, y: 340 },
+		position: { x: 1100, y: 320 },
 		data: {
 			name: "Insurance",
 			amount: 200,
@@ -169,7 +174,7 @@ const expenseNodes: ExpenseNodeData[] = [
 	},
 	{
 		id: "expense-streaming",
-		position: { x: 1100, y: 480 },
+		position: { x: 1100, y: 460 },
 		data: {
 			name: "Streaming",
 			amount: 35,
@@ -184,7 +189,7 @@ export const initialNodes: Node[] = [
 	...incomeNodes,
 	...checkingNodes,
 	...retirementNodes,
-	...savingsNodes,
+	...emergencyFundNodes,
 	...assetNodes,
 	...debtNodes,
 	...expenseNodes,
@@ -251,11 +256,11 @@ export const initialEdges: Edge[] = [
 		target: "expense-streaming",
 		type: "expense",
 	},
-	// checking → savings, $400/mo
+	// checking → emergency fund, $400/mo
 	{
-		id: "checking-savings",
+		id: "checking-emergency-fund",
 		source: "checking-main",
-		target: "savings-emergency",
+		target: "emergency-fund-main",
 		type: "allocation",
 		data: {
 			mode: "fixed",

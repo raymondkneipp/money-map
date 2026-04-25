@@ -15,6 +15,7 @@ import {
 	ShoppingBag01Icon,
 	SquareLock01Icon,
 	SquareUnlock01Icon,
+	UmbrellaDollarIcon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { type Node, Panel, useReactFlow } from "@xyflow/react";
@@ -34,6 +35,7 @@ type NodeKind =
 	| "incomeNode"
 	| "checkingNode"
 	| "savingsNode"
+	| "emergencyFundNode"
 	| "expenseNode"
 	| "cryptoNode"
 	| "retirementNode"
@@ -74,6 +76,14 @@ const NODE_PRESETS: Array<{
 		iconColor: "var(--color-blue-500)",
 		submenu: "assets",
 		data: { name: "Savings", principal: 0, apy: 4 },
+	},
+	{
+		kind: "emergencyFundNode",
+		label: "Emergency fund",
+		icon: UmbrellaDollarIcon,
+		iconColor: "var(--color-blue-500)",
+		submenu: "assets",
+		data: { name: "Emergency fund", principal: 0, apy: 4, targetMonths: 6 },
 	},
 	{
 		kind: "expenseNode",
