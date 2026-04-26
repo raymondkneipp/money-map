@@ -1,12 +1,7 @@
 import {
 	Analytics01Icon,
-	CalendarIcon,
 	ChartUpIcon,
-	CubeIcon,
-	Delete02Icon,
 	HomeIcon,
-	MessageQuestionIcon,
-	Settings05Icon,
 	WorkflowSquare10Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
