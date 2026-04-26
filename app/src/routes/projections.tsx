@@ -17,7 +17,6 @@ import { useFlowState } from "#/components/flow/flow-state";
 import type { CryptoCoinId } from "#/components/flow/types";
 import {
 	DEFAULT_ASSUMPTIONS,
-	defaultAnnualContribution,
 	type ProjectionAssumptions,
 	runProjection,
 } from "#/lib/projections";
@@ -72,27 +71,12 @@ function ProjectionsPage() {
 		};
 	}, [coins]);
 
-	const seededContribution = useMemo(
-		() => defaultAnnualContribution(nodes, edges),
-		[nodes, edges],
-	);
-
-	// Assumptions are user-editable. Seed annualContribution from the live
-	// graph the first time we render with a non-zero value, but otherwise
-	// leave whatever the user typed alone.
-	const [assumptions, setAssumptions] = useState<ProjectionAssumptions>(() => ({
-		...DEFAULT_ASSUMPTIONS,
-		annualContribution: seededContribution,
-	}));
-	const [contributionTouched, setContributionTouched] = useState(false);
-	useEffect(() => {
-		if (contributionTouched) return;
-		setAssumptions((a) => ({ ...a, annualContribution: seededContribution }));
-	}, [seededContribution, contributionTouched]);
+	const [assumptions, setAssumptions] =
+		useState<ProjectionAssumptions>(DEFAULT_ASSUMPTIONS);
 
 	const result = useMemo(
-		() => runProjection(nodes, assumptions, cryptoPrices),
-		[nodes, assumptions, cryptoPrices],
+		() => runProjection(nodes, edges, assumptions, cryptoPrices),
+		[nodes, edges, assumptions, cryptoPrices],
 	);
 
 	const chartConfig: ChartConfig = {
@@ -227,34 +211,6 @@ function ProjectionsPage() {
 									}
 								/>
 							</Field>
-							<Field label="Investment return (%)">
-								<Input
-									type="number"
-									step="0.1"
-									value={assumptions.investmentReturnPct}
-									onChange={(e) =>
-										update("investmentReturnPct", numberOr(e.target.value, 7))
-									}
-								/>
-							</Field>
-							<Field
-								label="Annual contribution ($)"
-								hint={
-									contributionTouched
-										? `Auto-detected: ${usd.format(seededContribution)}/yr`
-										: "Auto-filled from your flow"
-								}
-							>
-								<Input
-									type="number"
-									step="100"
-									value={assumptions.annualContribution}
-									onChange={(e) => {
-										setContributionTouched(true);
-										update("annualContribution", numberOr(e.target.value, 0));
-									}}
-								/>
-							</Field>
 							<Field label="Safe withdrawal rate (%)">
 								<Input
 									type="number"
@@ -265,18 +221,28 @@ function ProjectionsPage() {
 									}
 								/>
 							</Field>
-							{contributionTouched && (
-								<button
-									type="button"
-									className="text-xs text-muted-foreground underline-offset-2 hover:underline"
-									onClick={() => {
-										setContributionTouched(false);
-										update("annualContribution", seededContribution);
-									}}
-								>
-									Reset contribution to auto-detected
-								</button>
-							)}
+							<div className="rounded-md border border-border/60 bg-muted/30 p-2 text-[11px] text-muted-foreground">
+								<div className="mb-1 font-medium text-foreground">
+									Derived from your flow
+								</div>
+								<div className="flex justify-between">
+									<span>Blended return</span>
+									<span className="font-mono tabular-nums">
+										{result.blendedReturnPct.toFixed(2)}%
+									</span>
+								</div>
+								<div className="flex justify-between">
+									<span>Annual contributions</span>
+									<span className="font-mono tabular-nums">
+										{usd.format(result.totalAnnualContribution)}
+									</span>
+								</div>
+								<p className="mt-1 leading-snug">
+									Each asset grows at its own rate (APY on cash/savings/IRA/
+									brokerage, growth profile on crypto). Edit the underlying
+									nodes to change these.
+								</p>
+							</div>
 						</CardContent>
 					</Card>
 
