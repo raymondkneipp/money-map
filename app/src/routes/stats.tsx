@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/chart";
 import {
 	assetAllocation,
+	cryptoHoldings,
 	debtsByType,
 	debtToIncome,
 	expensesByCategory,
@@ -56,6 +57,29 @@ const usdSigned = new Intl.NumberFormat("en-US", {
 	maximumFractionDigits: 0,
 	signDisplay: "exceptZero",
 });
+
+const usdPrecise = new Intl.NumberFormat("en-US", {
+	style: "currency",
+	currency: "USD",
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2,
+});
+
+const coinUnits = new Intl.NumberFormat("en-US", {
+	minimumFractionDigits: 0,
+	maximumFractionDigits: 8,
+});
+
+function formatCoinPrice(price: number): string {
+	if (price === 0) return "—";
+	if (price >= 1) return usdPrecise.format(price);
+	return new Intl.NumberFormat("en-US", {
+		style: "currency",
+		currency: "USD",
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 6,
+	}).format(price);
+}
 
 const PALETTE = [
 	"var(--chart-1)",
@@ -99,6 +123,8 @@ function StatsPage() {
 	const debt = totalDebt(nodes);
 	const worth = netWorth(nodes, cryptoPrices);
 
+	const holdings = cryptoHoldings(nodes, cryptoPrices);
+	const cryptoTotal = holdings.reduce((s, h) => s + h.value, 0);
 	const allocation = assetAllocation(nodes, cryptoPrices);
 	const breakdown = monthlyBreakdown(nodes, edges);
 	const expenseCats = expensesByCategory(nodes);
@@ -381,6 +407,70 @@ function StatsPage() {
 										/>
 									</BarChart>
 								</ChartContainer>
+							)}
+						</CardContent>
+					</Card>
+				</section>
+
+				<section>
+					<Card>
+						<CardHeader>
+							<CardTitle>Crypto holdings</CardTitle>
+							<CardDescription>
+								{holdings.length === 0
+									? "No coins held"
+									: `${holdings.length} coin${holdings.length === 1 ? "" : "s"} · ${usd.format(cryptoTotal)} total`}
+							</CardDescription>
+						</CardHeader>
+						<CardContent>
+							{holdings.length === 0 ? (
+								<EmptyState>No crypto positions yet</EmptyState>
+							) : (
+								<div className="overflow-x-auto">
+									<table className="w-full text-sm">
+										<thead>
+											<tr className="border-b border-border text-left text-xs text-muted-foreground">
+												<th className="py-2 pr-4 font-medium">Coin</th>
+												<th className="py-2 pr-4 text-right font-medium">
+													Holdings
+												</th>
+												<th className="py-2 pr-4 text-right font-medium">
+													Price
+												</th>
+												<th className="py-2 text-right font-medium">Value</th>
+											</tr>
+										</thead>
+										<tbody>
+											{holdings.map((h) => (
+												<tr
+													key={h.coin}
+													className="border-b border-border/50 last:border-0"
+												>
+													<td className="py-2.5 pr-4">
+														<div className="flex flex-col">
+															<span className="font-medium">{h.name}</span>
+															<span className="text-xs text-muted-foreground">
+																{h.symbol}
+															</span>
+														</div>
+													</td>
+													<td className="py-2.5 pr-4 text-right font-mono tabular-nums">
+														{coinUnits.format(h.units)}{" "}
+														<span className="text-xs text-muted-foreground">
+															{h.symbol}
+														</span>
+													</td>
+													<td className="py-2.5 pr-4 text-right font-mono tabular-nums text-muted-foreground">
+														{formatCoinPrice(h.price)}
+													</td>
+													<td className="py-2.5 text-right font-mono font-medium tabular-nums">
+														{h.price === 0 ? "—" : usd.format(h.value)}
+													</td>
+												</tr>
+											))}
+										</tbody>
+									</table>
+								</div>
 							)}
 						</CardContent>
 					</Card>

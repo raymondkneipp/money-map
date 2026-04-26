@@ -7,6 +7,7 @@ import {
 	type AssetNodeData,
 	type CheckingNodeData,
 	type CryptoCoinId,
+	CRYPTO_COINS,
 	type CryptoNodeData,
 	type DebtNodeData,
 	type DebtType,
@@ -20,6 +21,10 @@ import {
 	type SavingsNodeData,
 	toAnnual,
 } from "#/components/flow/types";
+
+const CRYPTO_COIN_META = Object.fromEntries(
+	CRYPTO_COINS.map((c) => [c.id, c]),
+) as Record<CryptoCoinId, (typeof CRYPTO_COINS)[number]>;
 
 const EXPENSE_CATEGORY_LABEL = Object.fromEntries(
 	EXPENSE_CATEGORIES.map((c) => [c.id, c.label]),
@@ -284,6 +289,46 @@ export function monthlyBreakdown(
 	}
 
 	return slices.filter((s) => s.monthly > 0);
+}
+
+export type CryptoHolding = {
+	coin: CryptoCoinId;
+	symbol: string;
+	name: string;
+	units: number;
+	price: number;
+	value: number;
+};
+
+/**
+ * Total holdings per coin, aggregating any crypto nodes that share the same
+ * coin id. Sorted by USD value descending. `price` and `value` are 0 when no
+ * price has been fetched yet for that coin.
+ */
+export function cryptoHoldings(
+	nodes: Node[],
+	cryptoPrices: Partial<Record<CryptoCoinId, number>> = {},
+): CryptoHolding[] {
+	const units = new Map<CryptoCoinId, number>();
+	for (const n of nodes) {
+		if (n.type !== "cryptoNode") continue;
+		const d = (n as CryptoNodeData).data;
+		units.set(d.coin, (units.get(d.coin) ?? 0) + d.principal);
+	}
+	return [...units.entries()]
+		.map(([coin, u]) => {
+			const meta = CRYPTO_COIN_META[coin];
+			const price = cryptoPrices[coin] ?? 0;
+			return {
+				coin,
+				symbol: meta.symbol,
+				name: meta.name,
+				units: u,
+				price,
+				value: u * price,
+			};
+		})
+		.sort((a, b) => b.value - a.value);
 }
 
 /** Distinct crypto coin IDs present in the graph. */
