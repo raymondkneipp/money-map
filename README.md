@@ -1,204 +1,144 @@
-Welcome to your new TanStack Start app! 
+<div align="center">
+  <img src="public/logo192.png" alt="Money Map" width="96" height="96" />
+  <h1>Money Map</h1>
+  <p><strong>Visualize your finances as a living flow chart.</strong></p>
+  <p>
+    Map income, expenses, assets, and debt as nodes on a canvas. Wire them up,
+    tweak assumptions, and watch your net worth, stats, and retirement
+    projections update in real time.
+  </p>
+</div>
 
-# Getting Started
+---
 
-To run this application:
+## Why
+
+Spreadsheets are great at math and terrible at storytelling. Most budget apps
+make you connect bank accounts, then bury the structure of your money behind
+endless category lists. Money Map sits between the two: an interactive canvas
+where the *shape* of your finances is the primary view, and the numbers fall
+out of it.
+
+- **Local-first** — every node, edge, and scenario lives in your browser. No
+  signup, no bank linking, no analytics on your finances.
+- **What-if scenarios** — duplicate a map, change one input, and compare
+  futures side by side. Keep "base case", "switch jobs", "buy a house" as
+  separate snapshots.
+- **End-to-end** — the same model powers a dashboard of live stats and a
+  long-horizon projection (FI number, early-retirement age, real vs. nominal
+  net worth).
+
+## Features
+
+- **Flow-chart canvas** — drag nodes for income, checking, savings, emergency
+  fund, brokerage/retirement, crypto, expenses, generic assets, and debt.
+  Connect them with allocation or expense edges.
+- **Live stats dashboard** — net worth, monthly cash flow, debt-to-income,
+  asset allocation, expenses by category, and crypto holdings — recomputed
+  the moment you change a node.
+- **Retirement projections** — nominal and inflation-adjusted net worth
+  through any target age, FI number via the safe-withdrawal rule, and the
+  earliest age you hit FI based on your blended return.
+- **Crypto-aware** — BTC, ETH, SOL prices stream in live and roll through
+  every projection.
+- **Scenarios** — first-class "save / duplicate / rename / switch" so
+  long-term planning isn't a single fragile snapshot.
+- **Light & dark themes** — auto-follows system, manually overridable.
+
+## Quick start
 
 ```bash
 pnpm install
-pnpm dev
+pnpm dev          # http://localhost:3000
 ```
 
-# Building For Production
+Open `/` for the marketing landing page. Open `/app` for the canvas.
 
-To build this application for production:
+## Tech stack
+
+| Layer | Choice |
+|---|---|
+| Framework | [TanStack Start](https://tanstack.com/start) (Vite + Nitro SSR) |
+| Routing | [TanStack Router](https://tanstack.com/router) (file-based) |
+| Canvas | [React Flow / xyflow](https://reactflow.dev) |
+| UI | [shadcn/ui](https://ui.shadcn.com) + [Tailwind v4](https://tailwindcss.com) |
+| Charts | [Recharts](https://recharts.org) |
+| State | React context + `localStorage` persistence (per scenario) |
+| Forms | [TanStack Form](https://tanstack.com/form) + [Zod](https://zod.dev) |
+| Tests | [Vitest](https://vitest.dev) (unit + integration) |
+| Lint/Format | [Biome](https://biomejs.dev) |
+| Icons | [Hugeicons](https://hugeicons.com) |
+
+## Project structure
+
+```
+src/
+├── routes/
+│   ├── __root.tsx            # html shell, head meta, favicons, OG tags
+│   ├── index.tsx             # marketing landing page (/)
+│   ├── app.tsx               # /app layout — sidebars + flow providers
+│   ├── app.index.tsx         # /app — the canvas
+│   ├── app.stats.tsx         # /app/stats — dashboard
+│   └── app.projections.tsx   # /app/projections — FI calculator
+├── components/
+│   ├── flow/                 # canvas, nodes, edges, node editors
+│   ├── ui/                   # shadcn primitives
+│   ├── sidebar-left.tsx      # nav + scenarios
+│   └── sidebar-right.tsx     # contextual node editor
+├── lib/
+│   ├── projections.ts        # core long-horizon math
+│   ├── allocation.ts         # edge allocation rules
+│   ├── edge-rules.ts         # what can connect to what
+│   ├── debt.ts               # amortization helpers
+│   ├── stats.ts              # dashboard aggregations
+│   └── ...                   # dates, format, chart-axis, storage
+├── hooks/
+└── styles.css                # tailwind + theme tokens
+```
+
+The flow model is the single source of truth — every other view (stats,
+projections, sidebars) is a pure function of `nodes + edges`.
+
+## Scripts
+
+| Script | What it does |
+|---|---|
+| `pnpm dev` | Vite dev server on `:3000` |
+| `pnpm build` | Production build via Nitro |
+| `pnpm preview` | Preview the production build locally |
+| `pnpm test` | Vitest unit + integration tests |
+| `pnpm lint` | Biome lint |
+| `pnpm format` | Biome format |
+| `pnpm check` | Biome lint + format check |
+| `pnpm icons` | Regenerate favicons / PWA icons / OG image from `scripts/generate-favicons.mjs` |
+
+## Deployment
+
+Built on Nitro, which auto-detects deploy targets via env. **Vercel** works
+out of the box:
 
 ```bash
-pnpm build
+vercel              # or push to GitHub and import in the Vercel dashboard
 ```
 
-## Testing
+Vercel sets `VERCEL=1`, Nitro switches to its Vercel preset automatically —
+no `vercel.json` required. Build command: `pnpm build`. Output: `.output/`.
 
-This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:
+Same applies to **Netlify** (`NETLIFY=1`) and **Cloudflare Pages**
+(`CF_PAGES=1`). To target one explicitly, set `NITRO_PRESET=vercel|netlify|cloudflare-pages`.
 
-```bash
-pnpm test
-```
+## Privacy
 
-## Styling
+Money Map is local-first by design. Your scenarios, nodes, and assumptions
+live in `localStorage`, scoped to your browser. The app makes one outbound
+network call: a public, unauthenticated price lookup against a crypto price
+API, only when a `cryptoNode` is on the canvas.
 
-This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
+## License
 
-### Removing Tailwind CSS
+MIT — see [LICENSE](./LICENSE).
 
-If you prefer not to use Tailwind CSS:
+---
 
-1. Remove the demo pages in `src/routes/demo/`
-2. Replace the Tailwind import in `src/styles.css` with your own styles
-3. Remove `tailwindcss()` from the plugins array in `vite.config.ts`
-4. Uninstall the packages: `pnpm add @tailwindcss/vite tailwindcss --dev`
-
-## Linting & Formatting
-
-This project uses [Biome](https://biomejs.dev/) for linting and formatting. The following scripts are available:
-
-
-```bash
-pnpm lint
-pnpm format
-pnpm check
-```
-
-
-
-## Routing
-
-This project uses [TanStack Router](https://tanstack.com/router) with file-based routing. Routes are managed as files in `src/routes`.
-
-### Adding A Route
-
-To add a new route to your application just add a new file in the `./src/routes` directory.
-
-TanStack will automatically generate the content of the route file for you.
-
-Now that you have two routes you can use a `Link` component to navigate between them.
-
-### Adding Links
-
-To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
-
-```tsx
-import { Link } from "@tanstack/react-router";
-```
-
-Then anywhere in your JSX you can use it like so:
-
-```tsx
-<Link to="/about">About</Link>
-```
-
-This will create a link that will navigate to the `/about` route.
-
-More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
-
-### Using A Layout
-
-In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you render `{children}` in the `shellComponent`.
-
-Here is an example layout that includes a header:
-
-```tsx
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
-
-export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { charSet: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'My App' },
-    ],
-  }),
-  shellComponent: ({ children }) => (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        <header>
-          <nav>
-            <Link to="/">Home</Link>
-            <Link to="/about">About</Link>
-          </nav>
-        </header>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  ),
-})
-```
-
-More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
-
-## Server Functions
-
-TanStack Start provides server functions that allow you to write server-side code that seamlessly integrates with your client components.
-
-```tsx
-import { createServerFn } from '@tanstack/react-start'
-
-const getServerTime = createServerFn({
-  method: 'GET',
-}).handler(async () => {
-  return new Date().toISOString()
-})
-
-// Use in a component
-function MyComponent() {
-  const [time, setTime] = useState('')
-  
-  useEffect(() => {
-    getServerTime().then(setTime)
-  }, [])
-  
-  return <div>Server time: {time}</div>
-}
-```
-
-## API Routes
-
-You can create API routes by using the `server` property in your route definitions:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-import { json } from '@tanstack/react-start'
-
-export const Route = createFileRoute('/api/hello')({
-  server: {
-    handlers: {
-      GET: () => json({ message: 'Hello, World!' }),
-    },
-  },
-})
-```
-
-## Data Fetching
-
-There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
-
-For example:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-
-export const Route = createFileRoute('/people')({
-  loader: async () => {
-    const response = await fetch('https://swapi.dev/api/people')
-    return response.json()
-  },
-  component: PeopleComponent,
-})
-
-function PeopleComponent() {
-  const data = Route.useLoaderData()
-  return (
-    <ul>
-      {data.results.map((person) => (
-        <li key={person.name}>{person.name}</li>
-      ))}
-    </ul>
-  )
-}
-```
-
-Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
-
-# Demo files
-
-Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
-
-# Learn More
-
-You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
-
-For TanStack Start specific documentation, visit [TanStack Start](https://tanstack.com/start).
+Made by [Raymond Kneipp](https://raymondkneipp.com). Source on
+[GitHub](https://github.com/raymondkneipp/money-map).
