@@ -1,26 +1,23 @@
 import type { Edge, Node } from "@xyflow/react";
 import {
-	nodeAnnualInflow,
-	nodeAnnualOutflow,
-} from "#/components/flow/allocation";
-import {
 	type AssetNodeData,
 	type CheckingNodeData,
-	type CryptoCoinId,
 	CRYPTO_COINS,
+	type CryptoCoinId,
 	type CryptoNodeData,
+	DEBT_TYPES,
 	type DebtNodeData,
 	type DebtType,
-	DEBT_TYPES,
 	type EmergencyFundNodeData,
-	type ExpenseCategory,
 	EXPENSE_CATEGORIES,
+	type ExpenseCategory,
 	type ExpenseNodeData,
 	type IncomeNodeData,
 	type RetirementNodeData,
 	type SavingsNodeData,
 	toAnnual,
 } from "#/components/flow/types";
+import { nodeAnnualInflow, nodeAnnualOutflow } from "./allocation";
 
 const CRYPTO_COIN_META = Object.fromEntries(
 	CRYPTO_COINS.map((c) => [c.id, c]),
@@ -166,10 +163,7 @@ export function totalAssets(
 	nodes: Node[],
 	cryptoPrices: Partial<Record<CryptoCoinId, number>> = {},
 ): number {
-	return assetAllocation(nodes, cryptoPrices).reduce(
-		(s, b) => s + b.value,
-		0,
-	);
+	return assetAllocation(nodes, cryptoPrices).reduce((s, b) => s + b.value, 0);
 }
 
 /** Total outstanding debt principal across all debt nodes. */
@@ -198,9 +192,7 @@ export function netWorth(
  */
 export function monthlyCashFlow(nodes: Node[]): number {
 	return (
-		monthlyIncome(nodes) -
-		monthlyExpenses(nodes) -
-		monthlyDebtMinimums(nodes)
+		monthlyIncome(nodes) - monthlyExpenses(nodes) - monthlyDebtMinimums(nodes)
 	);
 }
 

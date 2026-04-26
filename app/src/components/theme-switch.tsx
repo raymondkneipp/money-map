@@ -1,8 +1,8 @@
 import { Moon02Icon, Sun01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import { useEffect, useState } from "react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "./ui/label";
-import { useEffect, useState } from "react";
 
 type ThemeMode = "light" | "dark";
 

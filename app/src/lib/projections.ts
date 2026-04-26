@@ -1,5 +1,4 @@
 import type { Edge, Node } from "@xyflow/react";
-import { nodeAnnualInflow } from "#/components/flow/allocation";
 import {
 	type AssetNodeData,
 	type CheckingNodeData,
@@ -12,6 +11,8 @@ import {
 	type SavingsNodeData,
 	toAnnual,
 } from "#/components/flow/types";
+import { nodeAnnualInflow } from "./allocation";
+import { ageInYears } from "./dates";
 import { monthlyExpenses } from "./stats";
 
 export type ProjectionAssumptions = {
@@ -75,18 +76,6 @@ export const DEFAULT_ASSUMPTIONS: ProjectionAssumptions = {
 	inflationPct: 3,
 	safeWithdrawalPct: 4,
 };
-
-/** Whole years between two dates (positive if `from` ≤ `to`). */
-export function ageInYears(birthDate: string, on: Date = new Date()): number {
-	const b = new Date(birthDate);
-	if (Number.isNaN(b.getTime())) return 0;
-	let years = on.getFullYear() - b.getFullYear();
-	const beforeBirthday =
-		on.getMonth() < b.getMonth() ||
-		(on.getMonth() === b.getMonth() && on.getDate() < b.getDate());
-	if (beforeBirthday) years -= 1;
-	return Math.max(0, years);
-}
 
 const CRYPTO_GROWTH_BY_ID = Object.fromEntries(
 	CRYPTO_GROWTH_PROFILES.map((p) => [p.id, p.apy]),

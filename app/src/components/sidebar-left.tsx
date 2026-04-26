@@ -1,5 +1,3 @@
-"use client";
-
 import {
 	Analytics01Icon,
 	CalendarIcon,
@@ -7,21 +5,15 @@ import {
 	CubeIcon,
 	Delete02Icon,
 	HomeIcon,
-	InputCursorTextIcon,
-	Location01Icon,
 	MessageQuestionIcon,
 	Settings05Icon,
-	TableIcon,
 	WorkflowSquare10Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Link } from "@tanstack/react-router";
 import type * as React from "react";
-import { NavFavorites } from "#/components/nav-favorites";
 import { NavMain } from "#/components/nav-main";
-import { NavSecondary } from "#/components/nav-secondary";
-import { NavWorkspaces } from "#/components/nav-workspaces";
-import { TeamSwitcher } from "#/components/team-switcher";
+import { NavScenarios } from "#/components/nav-scenarios";
 import {
 	Sidebar,
 	SidebarContent,
@@ -35,20 +27,6 @@ import { ThemeSwitch } from "./theme-switch";
 
 // This is sample data.
 const data = {
-	teams: [
-		{
-			name: "My Plan",
-			plan: "Enterprise",
-		},
-		{
-			name: "Acme Corp.",
-			plan: "Startup",
-		},
-		{
-			name: "Evil Corp.",
-			plan: "Free",
-		},
-	],
 	navMain: [
 		{
 			title: "Home",
@@ -64,24 +42,6 @@ const data = {
 			title: "Projections",
 			url: "/projections",
 			icon: <HugeiconsIcon icon={ChartUpIcon} strokeWidth={2} />,
-		},
-		{
-			title: "Simple Form Demo",
-			url: "/demo/form/simple",
-			icon: <HugeiconsIcon icon={InputCursorTextIcon} strokeWidth={2} />,
-			badge: "10",
-		},
-		{
-			title: "Address Form Demo",
-			url: "/demo/form/address",
-			icon: <HugeiconsIcon icon={Location01Icon} strokeWidth={2} />,
-			badge: "10",
-		},
-		{
-			title: "Table Demo",
-			url: "/demo/table",
-			icon: <HugeiconsIcon icon={TableIcon} strokeWidth={2} />,
-			badge: "10",
 		},
 	],
 	navSecondary: [
@@ -284,13 +244,10 @@ export function SidebarLeft({
 					</div>
 					<span className="font-heading font-medium">Money Map</span>
 				</Link>
-				<TeamSwitcher teams={data.teams} />
 				<NavMain items={data.navMain} />
 			</SidebarHeader>
 			<SidebarContent>
-				<NavFavorites favorites={data.favorites} />
-				<NavWorkspaces workspaces={data.workspaces} />
-				<NavSecondary items={data.navSecondary} className="mt-auto" />
+				<NavScenarios />
 			</SidebarContent>
 			<SidebarRail />
 

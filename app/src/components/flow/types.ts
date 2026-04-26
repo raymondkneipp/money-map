@@ -1,22 +1,20 @@
 import type { Edge, Node } from "@xyflow/react";
+import {
+	FREQUENCIES,
+	FREQUENCY_BY_ID,
+	type Frequency,
+	type FrequencyRecord,
+	toAnnual,
+} from "#/lib/frequencies";
 
-export const FREQUENCIES = [
-	{ id: "daily", label: "Daily", abbr: "d", perYear: 365 },
-	{ id: "weekly", label: "Weekly", abbr: "w", perYear: 52 },
-	{ id: "biweekly", label: "Biweekly", abbr: "bw", perYear: 26 },
-	{ id: "semimonthly", label: "Semi-monthly", abbr: "sm", perYear: 24 },
-	{ id: "monthly", label: "Monthly", abbr: "mo", perYear: 12 },
-	{ id: "quarterly", label: "Quarterly", abbr: "q", perYear: 4 },
-	{ id: "semiannually", label: "Semi-annually", abbr: "sa", perYear: 2 },
-	{ id: "annually", label: "Annually", abbr: "y", perYear: 1 },
-] as const;
-
-export type FrequencyRecord = (typeof FREQUENCIES)[number];
-export type Frequency = FrequencyRecord["id"];
-
-export const FREQUENCY_BY_ID = Object.fromEntries(
-	FREQUENCIES.map((f) => [f.id, f]),
-) as Record<Frequency, FrequencyRecord>;
+// Re-exports kept so existing call sites can migrate gradually.
+export {
+	FREQUENCIES,
+	FREQUENCY_BY_ID,
+	type Frequency,
+	type FrequencyRecord,
+	toAnnual,
+};
 
 export type IncomeNodeData = Node<{
 	name: string;
@@ -167,10 +165,6 @@ export type AllocationEdgeData = {
 };
 
 export type AllocationEdge = Edge<AllocationEdgeData, "allocation">;
-
-export function toAnnual(amount: number, frequency: Frequency): number {
-	return amount * FREQUENCY_BY_ID[frequency].perYear;
-}
 
 /**
  * Sum of recurring monthly outflows that an emergency fund should cover:

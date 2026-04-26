@@ -19,6 +19,7 @@ import { EdgeEditor } from "./edge-editor";
 import { EmergencyFundEditor } from "./emergency-fund-editor";
 import { ExpenseEditor } from "./expense-editor";
 import { IncomeEditor } from "./income-editor";
+import { NodePreviewChart } from "./node-preview-chart";
 import { RetirementEditor } from "./retirement-editor";
 import { SavingsEditor } from "./savings-editor";
 
@@ -31,82 +32,82 @@ export function NodeEditor() {
 	const selectedEdge = edges.find((e) => e.selected);
 
 	if (selectedNode) {
+		let editor: React.ReactNode;
 		if (selectedNode.type === "incomeNode") {
-			return (
+			editor = (
 				<IncomeEditor
 					node={selectedNode as IncomeNodeData}
 					onChange={updateNodeData}
 				/>
 			);
-		}
-		if (selectedNode.type === "checkingNode") {
-			return (
+		} else if (selectedNode.type === "checkingNode") {
+			editor = (
 				<CheckingEditor
 					node={selectedNode as CheckingNodeData}
 					onChange={updateNodeData}
 				/>
 			);
-		}
-		if (selectedNode.type === "savingsNode") {
-			return (
+		} else if (selectedNode.type === "savingsNode") {
+			editor = (
 				<SavingsEditor
 					node={selectedNode as SavingsNodeData}
 					onChange={updateNodeData}
 				/>
 			);
-		}
-		if (selectedNode.type === "emergencyFundNode") {
-			return (
+		} else if (selectedNode.type === "emergencyFundNode") {
+			editor = (
 				<EmergencyFundEditor
 					node={selectedNode as EmergencyFundNodeData}
 					onChange={updateNodeData}
 				/>
 			);
-		}
-		if (selectedNode.type === "expenseNode") {
-			return (
+		} else if (selectedNode.type === "expenseNode") {
+			editor = (
 				<ExpenseEditor
 					node={selectedNode as ExpenseNodeData}
 					onChange={updateNodeData}
 				/>
 			);
-		}
-		if (selectedNode.type === "cryptoNode") {
-			return (
+		} else if (selectedNode.type === "cryptoNode") {
+			editor = (
 				<CryptoEditor
 					node={selectedNode as CryptoNodeData}
 					onChange={updateNodeData}
 				/>
 			);
-		}
-		if (selectedNode.type === "retirementNode") {
-			return (
+		} else if (selectedNode.type === "retirementNode") {
+			editor = (
 				<RetirementEditor
 					node={selectedNode as RetirementNodeData}
 					onChange={updateNodeData}
 				/>
 			);
-		}
-		if (selectedNode.type === "debtNode") {
-			return (
+		} else if (selectedNode.type === "debtNode") {
+			editor = (
 				<DebtEditor
 					node={selectedNode as DebtNodeData}
 					onChange={updateNodeData}
 				/>
 			);
-		}
-		if (selectedNode.type === "assetNode") {
-			return (
+		} else if (selectedNode.type === "assetNode") {
+			editor = (
 				<AssetEditor
 					node={selectedNode as AssetNodeData}
 					onChange={updateNodeData}
 				/>
 			);
+		} else {
+			editor = (
+				<div className="px-4 py-3 text-sm text-muted-foreground">
+					No editor for this node type yet.
+				</div>
+			);
 		}
 		return (
-			<div className="px-4 py-3 text-sm text-muted-foreground">
-				No editor for this node type yet.
-			</div>
+			<>
+				<NodePreviewChart node={selectedNode} />
+				{editor}
+			</>
 		);
 	}
 

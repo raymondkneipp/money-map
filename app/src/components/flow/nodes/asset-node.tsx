@@ -6,6 +6,8 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Position, useEdges, useNodes } from "@xyflow/react";
 import { useMemo } from "react";
+import { nodeAnnualInflow } from "#/lib/allocation";
+import { usd } from "#/lib/format";
 import {
 	BaseNode,
 	BaseNodeContent,
@@ -13,7 +15,6 @@ import {
 	BaseNodeHeaderTitle,
 } from "@/components/base-node";
 import { BaseHandle } from "../../base-handle";
-import { nodeAnnualInflow } from "../allocation";
 import type { AssetNodeData, AssetType } from "../types";
 
 export const ASSET_TYPE_ICON = {
@@ -21,12 +22,6 @@ export const ASSET_TYPE_ICON = {
 	brokerage: AnalyticsUpIcon,
 	other: CubeIcon,
 } as const satisfies Record<AssetType, unknown>;
-
-const usd = new Intl.NumberFormat("en-US", {
-	style: "currency",
-	currency: "USD",
-	maximumFractionDigits: 0,
-});
 
 export function AssetNode({
 	id,

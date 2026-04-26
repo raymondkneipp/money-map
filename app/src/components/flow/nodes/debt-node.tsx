@@ -11,6 +11,9 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Position, useEdges, useNodes } from "@xyflow/react";
 import { useMemo } from "react";
+import { nodeAnnualInflow } from "#/lib/allocation";
+import { debtStatus, formatPayoff } from "#/lib/debt";
+import { usd } from "#/lib/format";
 import {
 	BaseNode,
 	BaseNodeContent,
@@ -19,15 +22,7 @@ import {
 } from "@/components/base-node";
 import { BaseHandle } from "../../base-handle";
 import { Badge } from "../../ui/badge";
-import { nodeAnnualInflow } from "../allocation";
-import { debtStatus, formatPayoff } from "../debt";
 import { type DebtNodeData, type DebtType, toAnnual } from "../types";
-
-const usd = new Intl.NumberFormat("en-US", {
-	style: "currency",
-	currency: "USD",
-	maximumFractionDigits: 0,
-});
 
 export const DEBT_TYPE_ICON = {
 	creditCard: CreditCardIcon,

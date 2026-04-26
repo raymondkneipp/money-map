@@ -6,7 +6,11 @@ import {
 	useEdges,
 	useNodes,
 } from "@xyflow/react";
-import { edgeAnnualValue, edgeStrokeWidth, formatAnnualAs } from "./allocation";
+import {
+	edgeAnnualValue,
+	edgeStrokeWidth,
+	formatAnnualAs,
+} from "#/lib/allocation";
 import type { AllocationEdgeData } from "./types";
 
 // display detail in the source income's frequency when we can find one

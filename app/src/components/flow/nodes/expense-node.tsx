@@ -11,6 +11,7 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Position } from "@xyflow/react";
+import { usdPrecise } from "#/lib/format";
 import {
 	BaseNode,
 	BaseNodeContent,
@@ -43,10 +44,7 @@ export function ExpenseNode({
 	id: string;
 	data: ExpenseNodeData["data"];
 }) {
-	const formatted = new Intl.NumberFormat("en-US", {
-		style: "currency",
-		currency: "USD",
-	}).format(data.amount);
+	const formatted = usdPrecise.format(data.amount);
 
 	return (
 		<BaseNode className="w-48 bg-expenses border-expenses-border in-[.selected]:shadow-expenses-border/50">

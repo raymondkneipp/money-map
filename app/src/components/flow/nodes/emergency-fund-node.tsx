@@ -2,6 +2,8 @@ import { UmbrellaDollarIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Position, useEdges, useNodes } from "@xyflow/react";
 import { useMemo } from "react";
+import { nodeAnnualInflow } from "#/lib/allocation";
+import { usd } from "#/lib/format";
 import {
 	BaseNode,
 	BaseNodeContent,
@@ -9,17 +11,7 @@ import {
 	BaseNodeHeaderTitle,
 } from "@/components/base-node";
 import { BaseHandle } from "../../base-handle";
-import { nodeAnnualInflow } from "../allocation";
-import {
-	type EmergencyFundNodeData,
-	monthlyEssentialOutflow,
-} from "../types";
-
-const usd = new Intl.NumberFormat("en-US", {
-	style: "currency",
-	currency: "USD",
-	maximumFractionDigits: 0,
-});
+import { type EmergencyFundNodeData, monthlyEssentialOutflow } from "../types";
 
 export function EmergencyFundNode({
 	id,
@@ -36,10 +28,7 @@ export function EmergencyFundNode({
 		[id, nodes, edges],
 	);
 
-	const monthlyNeeded = useMemo(
-		() => monthlyEssentialOutflow(nodes),
-		[nodes],
-	);
+	const monthlyNeeded = useMemo(() => monthlyEssentialOutflow(nodes), [nodes]);
 	const target = monthlyNeeded * data.targetMonths;
 	const monthsCovered = monthlyNeeded > 0 ? data.principal / monthlyNeeded : 0;
 	const ratio = target > 0 ? Math.min(1, data.principal / target) : 0;

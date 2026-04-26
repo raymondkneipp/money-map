@@ -83,10 +83,4 @@ export function debtStatus(
 	};
 }
 
-export function formatPayoff(months: number): string {
-	if (!Number.isFinite(months) || months <= 0) return "—";
-	if (months < 12) return `${Math.ceil(months)} mo`;
-	const years = months / 12;
-	if (years < 10) return `${years.toFixed(1)} yr`;
-	return `${Math.round(years)} yr`;
-}
+export { formatPayoff } from "./format";

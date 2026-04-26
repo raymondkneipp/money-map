@@ -10,7 +10,7 @@ function App() {
 			<SidebarTrigger
 				variant="secondary"
 				size="icon-lg"
-				className="sticky top-4 left-0 ml-4 z-10"
+				className="sticky top-3 left-0 ml-4 z-10"
 			/>
 
 			<div className="absolute inset-x-0 bottom-0 top-0">

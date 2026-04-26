@@ -10,23 +10,10 @@ import {
 	XAxis,
 	YAxis,
 } from "recharts";
-import { useFlowState } from "#/components/flow/flow-state";
 import { fetchCoinPrice } from "#/components/flow/crypto-price";
+import { useFlowState } from "#/components/flow/flow-state";
 import type { CryptoCoinId } from "#/components/flow/types";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
-import {
-	type ChartConfig,
-	ChartContainer,
-	ChartTooltip,
-	ChartTooltipContent,
-} from "@/components/ui/chart";
+import { coinUnits, usd, usdPrecise, usdSigned } from "#/lib/format";
 import {
 	assetAllocation,
 	cryptoHoldings,
@@ -42,33 +29,22 @@ import {
 	totalDebt,
 	uniqueCryptoCoins,
 } from "#/lib/stats";
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from "@/components/ui/card";
+import {
+	type ChartConfig,
+	ChartContainer,
+	ChartTooltip,
+	ChartTooltipContent,
+} from "@/components/ui/chart";
+import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export const Route = createFileRoute("/stats")({ component: StatsPage });
-
-const usd = new Intl.NumberFormat("en-US", {
-	style: "currency",
-	currency: "USD",
-	maximumFractionDigits: 0,
-});
-
-const usdSigned = new Intl.NumberFormat("en-US", {
-	style: "currency",
-	currency: "USD",
-	maximumFractionDigits: 0,
-	signDisplay: "exceptZero",
-});
-
-const usdPrecise = new Intl.NumberFormat("en-US", {
-	style: "currency",
-	currency: "USD",
-	minimumFractionDigits: 2,
-	maximumFractionDigits: 2,
-});
-
-const coinUnits = new Intl.NumberFormat("en-US", {
-	minimumFractionDigits: 0,
-	maximumFractionDigits: 8,
-});
 
 function formatCoinPrice(price: number): string {
 	if (price === 0) return "—";
@@ -336,8 +312,15 @@ function StatsPage() {
 							{expenseCats.length === 0 ? (
 								<EmptyState>No expenses yet</EmptyState>
 							) : (
-								<ChartContainer config={expenseConfig} className="h-[260px] w-full">
-									<BarChart data={expenseCats} layout="vertical" margin={{ left: 8, right: 16 }}>
+								<ChartContainer
+									config={expenseConfig}
+									className="h-[260px] w-full"
+								>
+									<BarChart
+										data={expenseCats}
+										layout="vertical"
+										margin={{ left: 8, right: 16 }}
+									>
 										<CartesianGrid horizontal={false} />
 										<XAxis
 											type="number"
@@ -353,9 +336,7 @@ function StatsPage() {
 										<ChartTooltip
 											content={
 												<ChartTooltipContent
-													formatter={(v) =>
-														`${usd.format(Number(v))}/mo`
-													}
+													formatter={(v) => `${usd.format(Number(v))}/mo`}
 												/>
 											}
 										/>
@@ -379,8 +360,15 @@ function StatsPage() {
 							{debtTypes.length === 0 ? (
 								<EmptyState>Debt-free</EmptyState>
 							) : (
-								<ChartContainer config={debtConfig} className="h-[260px] w-full">
-									<BarChart data={debtTypes} layout="vertical" margin={{ left: 8, right: 16 }}>
+								<ChartContainer
+									config={debtConfig}
+									className="h-[260px] w-full"
+								>
+									<BarChart
+										data={debtTypes}
+										layout="vertical"
+										margin={{ left: 8, right: 16 }}
+									>
 										<CartesianGrid horizontal={false} />
 										<XAxis
 											type="number"
@@ -525,10 +513,7 @@ function Legend({
 	return (
 		<ul className="mt-4 grid grid-cols-2 gap-x-4 gap-y-1.5 text-xs">
 			{items.map((it) => (
-				<li
-					key={it.label}
-					className="flex items-center justify-between gap-2"
-				>
+				<li key={it.label} className="flex items-center justify-between gap-2">
 					<span className="flex min-w-0 items-center gap-2">
 						<span
 							className="size-2 shrink-0 rounded-[2px]"

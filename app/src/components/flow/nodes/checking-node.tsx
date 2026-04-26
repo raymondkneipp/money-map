@@ -2,6 +2,8 @@ import { BankIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Position, useEdges, useNodes } from "@xyflow/react";
 import { useMemo } from "react";
+import { edgeAnnualValue, nodeAnnualInflow } from "#/lib/allocation";
+import { usd } from "#/lib/format";
 import {
 	BaseNode,
 	BaseNodeContent,
@@ -9,14 +11,7 @@ import {
 	BaseNodeHeaderTitle,
 } from "@/components/base-node";
 import { BaseHandle } from "../../base-handle";
-import { edgeAnnualValue, nodeAnnualInflow } from "../allocation";
 import type { CheckingNodeData } from "../types";
-
-const usd = new Intl.NumberFormat("en-US", {
-	style: "currency",
-	currency: "USD",
-	maximumFractionDigits: 0,
-});
 
 export function CheckingNode({
 	id,

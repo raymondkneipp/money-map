@@ -66,7 +66,7 @@ export function SidebarRight(props: React.ComponentProps<typeof Sidebar>) {
 		<div
 			data-state={hasSingleSelection ? "open" : "closed"}
 			aria-hidden={!hasSingleSelection}
-			className="sticky top-0 hidden h-svh w-0 overflow-hidden transition-[width] duration-200 ease-in-out data-[state=open]:w-(--sidebar-width) data-[state=open]:border-l lg:block"
+			className="sticky top-0 hidden h-svh w-0 overflow-hidden transition-[width] duration-200 ease-in-out data-[state=open]:w-(--sidebar-width) data-[state=open]:border-l md:block"
 		>
 			<Sidebar
 				collapsible="none"

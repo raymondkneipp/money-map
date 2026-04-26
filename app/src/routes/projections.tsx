@@ -1,3 +1,5 @@
+import { Calendar01Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -15,12 +17,18 @@ import {
 import { fetchCoinPrice } from "#/components/flow/crypto-price";
 import { useFlowState } from "#/components/flow/flow-state";
 import type { CryptoCoinId } from "#/components/flow/types";
+import { formatISODate, parseISODate } from "#/lib/dates";
+import { usd, usdCompact } from "#/lib/format";
 import {
 	DEFAULT_ASSUMPTIONS,
 	type ProjectionAssumptions,
 	runProjection,
 } from "#/lib/projections";
 import { uniqueCryptoCoins } from "#/lib/stats";
+import { loadJSON, saveJSON } from "#/lib/storage";
+import { cn } from "#/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
 	Card,
 	CardContent,
@@ -31,24 +39,18 @@ import {
 import { type ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "@/components/ui/popover";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
 export const Route = createFileRoute("/projections")({
 	component: ProjectionsPage,
 });
 
-const usd = new Intl.NumberFormat("en-US", {
-	style: "currency",
-	currency: "USD",
-	maximumFractionDigits: 0,
-});
-
-const usdCompact = new Intl.NumberFormat("en-US", {
-	style: "currency",
-	currency: "USD",
-	notation: "compact",
-	maximumFractionDigits: 1,
-});
+const ASSUMPTIONS_STORAGE_KEY = "money-map:projection-assumptions:v1";
 
 function ProjectionsPage() {
 	const { nodes, edges } = useFlowState();
@@ -73,6 +75,22 @@ function ProjectionsPage() {
 
 	const [assumptions, setAssumptions] =
 		useState<ProjectionAssumptions>(DEFAULT_ASSUMPTIONS);
+	const [hydrated, setHydrated] = useState(false);
+
+	// Load saved assumptions on mount. Done after first render to avoid SSR
+	// hydration mismatch with localStorage-derived values.
+	useEffect(() => {
+		const saved = loadJSON<Partial<ProjectionAssumptions>>(
+			ASSUMPTIONS_STORAGE_KEY,
+		);
+		if (saved) setAssumptions((a) => ({ ...a, ...saved }));
+		setHydrated(true);
+	}, []);
+
+	useEffect(() => {
+		if (!hydrated) return;
+		saveJSON(ASSUMPTIONS_STORAGE_KEY, assumptions);
+	}, [assumptions, hydrated]);
 
 	const result = useMemo(
 		() => runProjection(nodes, edges, assumptions, cryptoPrices),
@@ -184,10 +202,9 @@ function ProjectionsPage() {
 						</CardHeader>
 						<CardContent className="space-y-3">
 							<Field label="Birth date">
-								<Input
-									type="date"
+								<BirthDatePicker
 									value={assumptions.birthDate}
-									onChange={(e) => update("birthDate", e.target.value)}
+									onChange={(v) => update("birthDate", v)}
 								/>
 							</Field>
 							<Field label="Retirement age">
@@ -258,7 +275,7 @@ function ProjectionsPage() {
 							<ChartContainer config={chartConfig} className="h-[320px] w-full">
 								<AreaChart
 									data={result.series}
-									margin={{ left: 8, right: 16, top: 8, bottom: 0 }}
+									margin={{ left: 8, right: 16, top: 24, bottom: 0 }}
 								>
 									<defs>
 										<linearGradient
@@ -471,6 +488,58 @@ function MilestoneChart({
 				/>
 			</LineChart>
 		</ChartContainer>
+	);
+}
+
+function BirthDatePicker({
+	value,
+	onChange,
+}: {
+	value: string;
+	onChange: (next: string) => void;
+}) {
+	const [open, setOpen] = useState(false);
+	const date = parseISODate(value);
+	const display = date
+		? date.toLocaleDateString("en-US", {
+				month: "long",
+				day: "numeric",
+				year: "numeric",
+			})
+		: "Pick a date";
+	const today = new Date();
+	return (
+		<Popover open={open} onOpenChange={setOpen}>
+			<PopoverTrigger asChild>
+				<Button
+					type="button"
+					variant="outline"
+					className={cn(
+						"w-full justify-start font-normal",
+						!date && "text-muted-foreground",
+					)}
+				>
+					<HugeiconsIcon icon={Calendar01Icon} strokeWidth={2} />
+					<span>{display}</span>
+				</Button>
+			</PopoverTrigger>
+			<PopoverContent className="w-auto p-0" align="start">
+				<Calendar
+					mode="single"
+					selected={date}
+					defaultMonth={date ?? new Date(today.getFullYear() - 30, 0, 1)}
+					captionLayout="dropdown"
+					startMonth={new Date(1900, 0)}
+					endMonth={today}
+					disabled={{ after: today }}
+					onSelect={(d) => {
+						if (!d) return;
+						onChange(formatISODate(d));
+						setOpen(false);
+					}}
+				/>
+			</PopoverContent>
+		</Popover>
 	);
 }
 

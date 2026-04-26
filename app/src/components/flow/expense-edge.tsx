@@ -5,7 +5,7 @@ import {
 	useEdges,
 	useNodes,
 } from "@xyflow/react";
-import { edgeStrokeWidth } from "./allocation";
+import { edgeStrokeWidth } from "#/lib/allocation";
 
 export function ExpenseEdge({
 	id,

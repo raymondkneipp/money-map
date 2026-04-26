@@ -1,13 +1,11 @@
 import type { Edge, Node } from "@xyflow/react";
-import {
-	type AllocationEdgeData,
-	type ExpenseNodeData,
-	FREQUENCY_BY_ID,
-	type Frequency,
-	type IncomeNodeData,
-	type RetirementNodeData,
-	toAnnual,
-} from "./types";
+import type {
+	AllocationEdgeData,
+	ExpenseNodeData,
+	IncomeNodeData,
+	RetirementNodeData,
+} from "#/components/flow/types";
+import { toAnnual } from "#/lib/frequencies";
 
 /**
  * Annualized cost pulled by an `expense`-type edge: sourced from the
@@ -213,15 +211,4 @@ export function edgeStrokeWidth(
 	return MIN + (MAX - MIN) * Math.sqrt(ratio);
 }
 
-/**
- * Format annual amount back to a user-friendly string in the target frequency.
- */
-export function formatAnnualAs(annual: number, frequency: Frequency): string {
-	const perPeriod = annual / FREQUENCY_BY_ID[frequency].perYear;
-	const formatted = new Intl.NumberFormat("en-US", {
-		style: "currency",
-		currency: "USD",
-		maximumFractionDigits: 0,
-	}).format(perPeriod);
-	return `${formatted}/${FREQUENCY_BY_ID[frequency].abbr}`;
-}
+export { formatAnnualAs } from "./format";

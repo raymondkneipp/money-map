@@ -2,6 +2,8 @@ import { Alert02Icon, Money01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Position, useEdges, useNodes } from "@xyflow/react";
 import { useMemo } from "react";
+import { computeNodeUtilization, formatAnnualAs } from "#/lib/allocation";
+import { usdPrecise } from "#/lib/format";
 import {
 	BaseNode,
 	BaseNodeContent,
@@ -10,7 +12,6 @@ import {
 } from "@/components/base-node";
 import { BaseHandle } from "../../base-handle";
 import { Badge } from "../../ui/badge";
-import { computeNodeUtilization, formatAnnualAs } from "../allocation";
 import { FREQUENCY_BY_ID, type IncomeNodeData } from "../types";
 
 export function IncomeNode({
@@ -22,10 +23,7 @@ export function IncomeNode({
 }) {
 	const nodes = useNodes();
 	const edges = useEdges();
-	const formatted = new Intl.NumberFormat("en-US", {
-		style: "currency",
-		currency: "USD",
-	}).format(data.amount);
+	const formatted = usdPrecise.format(data.amount);
 
 	const utilization = useMemo(
 		() => computeNodeUtilization(id, nodes, edges),

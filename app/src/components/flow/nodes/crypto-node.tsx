@@ -2,6 +2,8 @@ import { BitcoinCircleIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Position, useEdges, useNodes } from "@xyflow/react";
 import { useEffect, useMemo, useState } from "react";
+import { edgeAnnualValue } from "#/lib/allocation";
+import { usd } from "#/lib/format";
 import {
 	BaseNode,
 	BaseNodeContent,
@@ -9,19 +11,12 @@ import {
 	BaseNodeHeaderTitle,
 } from "@/components/base-node";
 import { BaseHandle } from "../../base-handle";
-import { edgeAnnualValue } from "../allocation";
 import { fetchCoinPrice } from "../crypto-price";
 import {
 	CRYPTO_COINS,
 	CRYPTO_GROWTH_PROFILES,
 	type CryptoNodeData,
 } from "../types";
-
-const usd = new Intl.NumberFormat("en-US", {
-	style: "currency",
-	currency: "USD",
-	maximumFractionDigits: 0,
-});
 
 export function CryptoNode({
 	id,
