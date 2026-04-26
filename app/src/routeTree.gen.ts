@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as StatsRouteImport } from './routes/stats'
+import { Route as ProjectionsRouteImport } from './routes/projections'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as DemoTableRouteImport } from './routes/demo/table'
 import { Route as DemoFormSimpleRouteImport } from './routes/demo/form.simple'
@@ -18,6 +19,11 @@ import { Route as DemoFormAddressRouteImport } from './routes/demo/form.address'
 const StatsRoute = StatsRouteImport.update({
   id: '/stats',
   path: '/stats',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectionsRoute = ProjectionsRouteImport.update({
+  id: '/projections',
+  path: '/projections',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -43,6 +49,7 @@ const DemoFormAddressRoute = DemoFormAddressRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/projections': typeof ProjectionsRoute
   '/stats': typeof StatsRoute
   '/demo/table': typeof DemoTableRoute
   '/demo/form/address': typeof DemoFormAddressRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/projections': typeof ProjectionsRoute
   '/stats': typeof StatsRoute
   '/demo/table': typeof DemoTableRoute
   '/demo/form/address': typeof DemoFormAddressRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/projections': typeof ProjectionsRoute
   '/stats': typeof StatsRoute
   '/demo/table': typeof DemoTableRoute
   '/demo/form/address': typeof DemoFormAddressRoute
@@ -67,6 +76,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/projections'
     | '/stats'
     | '/demo/table'
     | '/demo/form/address'
@@ -74,6 +84,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/projections'
     | '/stats'
     | '/demo/table'
     | '/demo/form/address'
@@ -81,6 +92,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/projections'
     | '/stats'
     | '/demo/table'
     | '/demo/form/address'
@@ -89,6 +101,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ProjectionsRoute: typeof ProjectionsRoute
   StatsRoute: typeof StatsRoute
   DemoTableRoute: typeof DemoTableRoute
   DemoFormAddressRoute: typeof DemoFormAddressRoute
@@ -102,6 +115,13 @@ declare module '@tanstack/react-router' {
       path: '/stats'
       fullPath: '/stats'
       preLoaderRoute: typeof StatsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projections': {
+      id: '/projections'
+      path: '/projections'
+      fullPath: '/projections'
+      preLoaderRoute: typeof ProjectionsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -137,6 +157,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ProjectionsRoute: ProjectionsRoute,
   StatsRoute: StatsRoute,
   DemoTableRoute: DemoTableRoute,
   DemoFormAddressRoute: DemoFormAddressRoute,
