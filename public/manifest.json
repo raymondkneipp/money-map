@@ -1,0 +1,41 @@
+{
+  "name": "Money Map",
+  "short_name": "Money Map",
+  "description": "Visualize your finances as a flow chart. Track net worth, run retirement projections, model crypto holdings.",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon.ico",
+      "sizes": "16x16 32x32 48x48",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/logo192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo512-maskable.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
+  ],
+  "start_url": "/app",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#5b21b6",
+  "background_color": "#ffffff"
+}

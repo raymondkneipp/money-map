@@ -9,5 +9,7 @@ dist-ssr
 .wrangler
 .output
 .vinxi
+.vercel
+.fallow
 __unconfig*
 todos.json

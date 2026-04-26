@@ -1,5 +1,5 @@
 {
-  "name": "app",
+  "name": "money-map",
   "private": true,
   "type": "module",
   "imports": {
@@ -12,7 +12,8 @@
     "test": "vitest run",
     "format": "biome format",
     "lint": "biome lint",
-    "check": "biome check"
+    "check": "biome check",
+    "icons": "node scripts/generate-favicons.mjs"
   },
   "dependencies": {
     "@faker-js/faker": "^10.3.0",
@@ -58,6 +59,8 @@
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^6.0.1",
     "jsdom": "^28.1.0",
+    "png-to-ico": "^3.0.1",
+    "sharp": "^0.34.5",
     "typescript": "^5.7.2",
     "vite": "^8.0.0",
     "vitest": "^3.0.5"

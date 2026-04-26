@@ -2,7 +2,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Flow } from "#/components/flow";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
-export const Route = createFileRoute("/")({ component: App });
+export const Route = createFileRoute("/app/")({
+	component: App,
+	head: () => ({ meta: [{ title: "Flow · Money Map" }] }),
+});
 
 function App() {
 	return (

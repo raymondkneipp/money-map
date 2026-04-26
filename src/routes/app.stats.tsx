@@ -44,7 +44,10 @@ import {
 } from "@/components/ui/chart";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
-export const Route = createFileRoute("/stats")({ component: StatsPage });
+export const Route = createFileRoute("/app/stats")({
+	component: StatsPage,
+	head: () => ({ meta: [{ title: "Stats · Money Map" }] }),
+});
 
 function formatCoinPrice(price: number): string {
 	if (price === 0) return "—";

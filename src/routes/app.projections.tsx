@@ -46,8 +46,9 @@ import {
 } from "@/components/ui/popover";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 
-export const Route = createFileRoute("/projections")({
+export const Route = createFileRoute("/app/projections")({
 	component: ProjectionsPage,
+	head: () => ({ meta: [{ title: "Projections · Money Map" }] }),
 });
 
 const ASSUMPTIONS_STORAGE_KEY = "money-map:projection-assumptions:v1";
@@ -353,24 +354,29 @@ function ProjectionsPage() {
 											y={result.fiNumber}
 											stroke="var(--color-fiTarget)"
 											strokeDasharray="4 4"
-											label={{
-												value: `FI ${usdCompact.format(result.fiNumber)}`,
-												position: "insideTopRight",
-												fill: "var(--color-fiTarget)",
-												fontSize: 11,
-											}}
+											label={
+												<ChartBadgeLabel
+													value={`FI ${usdCompact.format(result.fiNumber)}`}
+													orientation="horizontal"
+													fill="var(--color-fiTarget)"
+													textFill="#fff"
+												/>
+											}
 										/>
 									)}
 									<ReferenceLine
 										x={assumptions.retirementAge}
 										stroke="var(--muted-foreground)"
 										strokeDasharray="2 4"
-										label={{
-											value: `Retire @ ${assumptions.retirementAge}`,
-											position: "top",
-											fill: "var(--muted-foreground)",
-											fontSize: 11,
-										}}
+										label={
+											<ChartBadgeLabel
+												value={`Retire @ ${assumptions.retirementAge}`}
+												orientation="vertical"
+												fill="var(--muted)"
+												textFill="var(--foreground)"
+												stroke="var(--border)"
+											/>
+										}
 									/>
 								</AreaChart>
 							</ChartContainer>
@@ -600,4 +606,71 @@ function MetricCard({
 function numberOr(raw: string, fallback: number): number {
 	const n = Number(raw);
 	return Number.isFinite(n) ? n : fallback;
+}
+
+/**
+ * Pill-style label for recharts ReferenceLine. Recharts injects `viewBox`
+ * into label elements at render time. For a horizontal line viewBox is
+ * { x, y, width, height: 0 }; for a vertical line it's { x, y, width: 0, height }.
+ */
+function ChartBadgeLabel({
+	viewBox,
+	value,
+	orientation,
+	fill,
+	textFill,
+	stroke,
+}: {
+	viewBox?: { x: number; y: number; width: number; height: number };
+	value: string;
+	orientation: "horizontal" | "vertical";
+	fill: string;
+	textFill: string;
+	stroke?: string;
+}) {
+	if (!viewBox) return null;
+	const padX = 6;
+	const padY = 3;
+	const charW = 6.2;
+	const w = Math.round(value.length * charW + padX * 2);
+	const h = 18;
+
+	let x: number;
+	let y: number;
+	if (orientation === "horizontal") {
+		// anchor to right edge of plotting area, just above the line
+		x = viewBox.x + viewBox.width - w - 4;
+		y = viewBox.y - h / 2;
+	} else {
+		// center on the vertical line, hover above the chart top
+		x = viewBox.x - w / 2;
+		y = viewBox.y - h - 2;
+	}
+
+	return (
+		<g pointerEvents="none">
+			<rect
+				x={x}
+				y={y}
+				width={w}
+				height={h}
+				rx={4}
+				ry={4}
+				fill={fill}
+				stroke={stroke ?? "none"}
+				strokeWidth={stroke ? 1 : 0}
+			/>
+			<text
+				x={x + w / 2}
+				y={y + h / 2}
+				textAnchor="middle"
+				dominantBaseline="central"
+				fontSize={11}
+				fontWeight={500}
+				fill={textFill}
+			>
+				{value}
+			</text>
+		</g>
+	);
 }
