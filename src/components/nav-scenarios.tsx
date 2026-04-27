@@ -46,7 +46,12 @@ export function NavScenarios() {
 		renameScenario,
 		deleteScenario,
 	} = useFlowState();
-	const { isMobile } = useSidebar();
+	const { isMobile, setOpenMobile } = useSidebar();
+
+	const handleSelect = (id: string) => {
+		setActiveScenario(id);
+		if (isMobile) setOpenMobile(false);
+	};
 
 	const [renameId, setRenameId] = useState<string | null>(null);
 	const [renameValue, setRenameValue] = useState("");
@@ -72,7 +77,7 @@ export function NavScenarios() {
 							<SidebarMenuItem key={s.id}>
 								<SidebarMenuButton
 									isActive={active}
-									onClick={() => setActiveScenario(s.id)}
+									onClick={() => handleSelect(s.id)}
 									title={s.name}
 								>
 									<HugeiconsIcon
@@ -142,7 +147,10 @@ export function NavScenarios() {
 					<SidebarMenuItem>
 						<SidebarMenuButton
 							className="text-sidebar-foreground/70"
-							onClick={() => createScenario()}
+							onClick={() => {
+								createScenario();
+								if (isMobile) setOpenMobile(false);
+							}}
 						>
 							<HugeiconsIcon icon={PlusSignIcon} strokeWidth={2} />
 							<span>Add scenario</span>

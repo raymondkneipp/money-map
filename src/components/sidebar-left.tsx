@@ -17,6 +17,7 @@ import {
 	SidebarMenu,
 	SidebarMenuItem,
 	SidebarRail,
+	useSidebar,
 } from "#/components/ui/sidebar";
 import { ThemeSwitch } from "./theme-switch";
 
@@ -43,10 +44,17 @@ const data = {
 export function SidebarLeft({
 	...props
 }: React.ComponentProps<typeof Sidebar>) {
+	const { isMobile, setOpenMobile } = useSidebar();
 	return (
 		<Sidebar className="border-r-0" {...props}>
 			<SidebarHeader>
-				<Link to="/" className="flex items-center gap-2 p-2">
+				<Link
+					to="/"
+					className="flex items-center gap-2 p-2"
+					onClick={() => {
+						if (isMobile) setOpenMobile(false);
+					}}
+				>
 					<div className="flex items-center justify-center bg-primary text-primary-foreground rounded-lg size-8">
 						<HugeiconsIcon icon={WorkflowSquare10Icon} className="size-6" />
 					</div>

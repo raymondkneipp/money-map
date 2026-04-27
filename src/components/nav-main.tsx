@@ -3,6 +3,7 @@ import {
 	SidebarMenu,
 	SidebarMenuButton,
 	SidebarMenuItem,
+	useSidebar,
 } from "#/components/ui/sidebar";
 
 export function NavMain({
@@ -14,12 +15,21 @@ export function NavMain({
 		icon: React.ReactNode;
 	}[];
 }) {
+	const { isMobile, setOpenMobile } = useSidebar();
+	const closeOnMobile = () => {
+		if (isMobile) setOpenMobile(false);
+	};
 	return (
 		<SidebarMenu>
 			{items.map((item) => (
 				<SidebarMenuItem key={item.title}>
 					<SidebarMenuButton asChild>
-						<Link to={item.url} activeProps={{ className: "bg-muted" }} activeOptions={{ exact: true }}>
+						<Link
+							to={item.url}
+							activeProps={{ className: "bg-muted" }}
+							activeOptions={{ exact: true }}
+							onClick={closeOnMobile}
+						>
 							{item.icon}
 							<span>{item.title}</span>
 						</Link>
