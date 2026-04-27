@@ -211,6 +211,7 @@ function ProjectionsPage() {
 							<Field label="Retirement age">
 								<Input
 									type="number"
+									inputMode="numeric"
 									min={1}
 									max={120}
 									value={assumptions.retirementAge}

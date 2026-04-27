@@ -81,6 +81,7 @@ export function RetirementEditor({
 						<InputGroupInput
 							id={`retirement-match-${id}`}
 							type="number"
+							inputMode="numeric"
 							min={0}
 							max={200}
 							step="1"

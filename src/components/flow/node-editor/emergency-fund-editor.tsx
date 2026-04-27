@@ -69,6 +69,7 @@ export function EmergencyFundEditor({
 							id={`emergency-target-${id}`}
 							name="targetMonths"
 							type="number"
+							inputMode="numeric"
 							min={1}
 							max={24}
 							step={1}
